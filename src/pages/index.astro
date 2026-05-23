@@ -89,11 +89,11 @@ const features = [
             <div class="mockup-hero-row">
               <div class="mockup-hero-stat">
                 <div class="mockup-label">NETTOVÄRDE</div>
-                <div class="mockup-hero-value">4 200 000 kr</div>
+                <div class="mockup-hero-value">2 847 300 kr</div>
               </div>
               <div class="mockup-hero-badges">
-                <span class="mockup-badge green">↑ 18 500 kr denna månad</span>
-                <span class="mockup-badge neutral">Sparkvot 24 %</span>
+                <span class="mockup-badge green">↑ 14 200 kr denna månad</span>
+                <span class="mockup-badge neutral">Sparkvot 19 %</span>
               </div>
             </div>
 
@@ -107,16 +107,16 @@ const features = [
                 <div class="mockup-card-body">
                   <div class="mockup-row">
                     <span class="mockup-row-label">Inkomst</span>
-                    <span class="mockup-row-val">95 000 kr</span>
+                    <span class="mockup-row-val">74 500 kr</span>
                   </div>
                   <div class="mockup-row">
                     <span class="mockup-row-label">Utgifter</span>
-                    <span class="mockup-row-val muted">–62 000 kr</span>
+                    <span class="mockup-row-val muted">–53 800 kr</span>
                   </div>
                   <div class="mockup-divider"></div>
                   <div class="mockup-row">
                     <span class="mockup-row-label bold">Sparande</span>
-                    <span class="mockup-row-val green bold">33 000 kr</span>
+                    <span class="mockup-row-val green bold">20 700 kr</span>
                   </div>
                 </div>
               </div>
@@ -128,16 +128,16 @@ const features = [
                 <div class="mockup-card-body">
                   <div class="mockup-row">
                     <span class="mockup-row-label">Skuld</span>
-                    <span class="mockup-row-val">3 600 000 kr</span>
+                    <span class="mockup-row-val">2 950 000 kr</span>
                   </div>
                   <div class="mockup-row">
                     <span class="mockup-row-label">Snittränta</span>
-                    <span class="mockup-row-val muted">3,65 %</span>
+                    <span class="mockup-row-val muted">3,85 %</span>
                   </div>
                   <div class="mockup-divider"></div>
                   <div class="mockup-row">
                     <span class="mockup-row-label bold">Räntekostnad</span>
-                    <span class="mockup-row-val bold">10 950 kr/mån</span>
+                    <span class="mockup-row-val bold">9 469 kr/mån</span>
                   </div>
                 </div>
               </div>
@@ -147,7 +147,7 @@ const features = [
             <div class="mockup-chart-row">
               <div class="mockup-label" style="margin-bottom: 8px;">NETTOVÄRDE — 6 MÅNADER</div>
               <div class="mockup-bars">
-                {[38, 52, 44, 68, 58, 80].map((h, i) => (
+                {[42, 35, 55, 61, 50, 74].map((h, i) => (
                   <div class="mockup-bar-col">
                     <div class="mockup-bar-fill" style={`height:${h}px; opacity:${0.35 + i*0.12}`}></div>
                     <span class="mockup-bar-label">{["Nov","Dec","Jan","Feb","Mar","Apr"][i]}</span>
@@ -193,6 +193,117 @@ const features = [
       </div>
     </section>
 
+    <!-- MOBILE SECTION -->
+    <section class="mobile-section">
+      <div class="container mobile-inner">
+        <div class="mobile-text">
+          <div class="section-tag">Alltid med dig</div>
+          <h2>Hela ekonomin i fickan — med smarta notiser</h2>
+          <p>
+            Ordo skickar push-notiser när det händer något du bör känna till. Ingen anledning att logga in varje dag — Ordo hör av sig när det är dags.
+          </p>
+          <ul class="mobile-list">
+            <li>
+              <div class="mobile-list-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/><path d="M13.73 21a2 2 0 0 1-3.46 0"/></svg>
+              </div>
+              <span>Räntebindning löper ut — påminnelse 60 dagar innan</span>
+            </li>
+            <li>
+              <div class="mobile-list-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+              </div>
+              <span>Sparkvoten sjönk under målnivån — dags att se över budgeten</span>
+            </li>
+            <li>
+              <div class="mobile-list-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg>
+              </div>
+              <span>Nettovärdet passerade en ny milstolpe</span>
+            </li>
+            <li>
+              <div class="mobile-list-icon">
+                <svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg>
+              </div>
+              <span>Sparmålet är 90 % uppnått — raka vägen i mål</span>
+            </li>
+          </ul>
+        </div>
+
+        <!-- Phone mockup -->
+        <div class="phone-wrap">
+          <div class="phone">
+            <div class="phone-notch"></div>
+            <div class="phone-screen">
+              <!-- Status bar -->
+              <div class="phone-statusbar">
+                <span>09:41</span>
+                <div class="phone-statusbar-icons">
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><path d="M1.5 8.5C5.5 4.5 18.5 4.5 22.5 8.5L20 11c-3-3-13-3-16 0L1.5 8.5z"/><path d="M5 12c1.9-1.9 13-1.9 14 0l-2.5 2.5c-1-1-8-1-9 0L5 12z"/><path d="M9 15.5c.9-.9 6-.9 6 0L12 18.5 9 15.5z"/></svg>
+                  <svg viewBox="0 0 24 24" width="12" height="12" fill="currentColor"><rect x="2" y="7" width="18" height="11" rx="2"/><path d="M22 11v3"/></svg>
+                </div>
+              </div>
+
+              <!-- Lock screen notifications -->
+              <div class="phone-lock">
+                <div class="phone-time">09:41</div>
+                <div class="phone-date">Lördag 24 maj</div>
+
+                <div class="phone-notifs">
+                  <div class="phone-notif">
+                    <div class="phone-notif-app">
+                      <svg viewBox="0 0 64 64" width="16" height="16" fill="none">
+                        <rect x="9.75"  y="44" width="6.5" height="12" rx="3.25" fill="white" opacity="0.5"/>
+                        <rect x="19.25" y="38" width="6.5" height="18" rx="3.25" fill="white" opacity="0.65"/>
+                        <rect x="28.75" y="31" width="6.5" height="25" rx="3.25" fill="white" opacity="0.8"/>
+                        <rect x="38.25" y="24" width="6.5" height="32" rx="3.25" fill="white" opacity="0.9"/>
+                        <rect x="47.75" y="19" width="6.5" height="37" rx="3.25" fill="white"/>
+                      </svg>
+                      <span>Ordo</span>
+                      <span class="phone-notif-time">nu</span>
+                    </div>
+                    <div class="phone-notif-title">Räntebindning löper ut om 58 dagar</div>
+                    <div class="phone-notif-body">Ert bolån på 1 850 000 kr binder om 22 juli. Dags att se vad bankerna erbjuder.</div>
+                  </div>
+                  <div class="phone-notif">
+                    <div class="phone-notif-app">
+                      <svg viewBox="0 0 64 64" width="16" height="16" fill="none">
+                        <rect x="9.75"  y="44" width="6.5" height="12" rx="3.25" fill="white" opacity="0.5"/>
+                        <rect x="19.25" y="38" width="6.5" height="18" rx="3.25" fill="white" opacity="0.65"/>
+                        <rect x="28.75" y="31" width="6.5" height="25" rx="3.25" fill="white" opacity="0.8"/>
+                        <rect x="38.25" y="24" width="6.5" height="32" rx="3.25" fill="white" opacity="0.9"/>
+                        <rect x="47.75" y="19" width="6.5" height="37" rx="3.25" fill="white"/>
+                      </svg>
+                      <span>Ordo</span>
+                      <span class="phone-notif-time">1h</span>
+                    </div>
+                    <div class="phone-notif-title">Sparmål: Kontantinsats 90 % klart 🎯</div>
+                    <div class="phone-notif-body">Ni är 270 000 kr från målet. Fortsätt i samma takt — klart om ~4 månader.</div>
+                  </div>
+                  <div class="phone-notif muted">
+                    <div class="phone-notif-app">
+                      <svg viewBox="0 0 64 64" width="16" height="16" fill="none">
+                        <rect x="9.75"  y="44" width="6.5" height="12" rx="3.25" fill="white" opacity="0.5"/>
+                        <rect x="19.25" y="38" width="6.5" height="18" rx="3.25" fill="white" opacity="0.65"/>
+                        <rect x="28.75" y="31" width="6.5" height="25" rx="3.25" fill="white" opacity="0.8"/>
+                        <rect x="38.25" y="24" width="6.5" height="32" rx="3.25" fill="white" opacity="0.9"/>
+                        <rect x="47.75" y="19" width="6.5" height="37" rx="3.25" fill="white"/>
+                      </svg>
+                      <span>Ordo</span>
+                      <span class="phone-notif-time">igår</span>
+                    </div>
+                    <div class="phone-notif-title">Aprilsparande: 23 400 kr</div>
+                    <div class="phone-notif-body">Er sparkvot för april landade på 21 %. Snitt senaste 3 månaderna: 19 %.</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </section>
+
     <!-- AI SECTION -->
     <section class="ai-section">
       <div class="container ai-inner">
@@ -226,7 +337,7 @@ const features = [
             <span class="ai-score-tag">Finansiell hälsa</span>
           </div>
           <div class="ai-card-body">
-            <p>"Er sparkvot på 24 % är stark. Med era bolån på 3,65 % snittränta skulle en räntehöjning på 1 pp kosta ca 3 000 kr mer per månad — er buffert klarar det, men amorteringstakten kan med fördel trappas upp."</p>
+            <p>"Er sparkvot på 19 % är stabil. Med era bolån på 3,85 % snittränta skulle en räntehöjning på 1 pp kosta ca 2 460 kr mer per månad — er buffert klarar det med marginal, men amorteringstakten kan med fördel ökas något."</p>
           </div>
           <div class="ai-card-footer">
             <span>Genererad av Claude · Baserad på 12 månader</span>
@@ -381,6 +492,35 @@ const features = [
   .feature-icon { width: 44px; height: 44px; border-radius: 10px; background: color-mix(in srgb, var(--brand) 10%, transparent); color: var(--brand); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
   .feature-card h3 { font-size: 16px; font-weight: 600; color: var(--fg); margin-bottom: 8px; }
   .feature-card p { font-size: 14px; color: var(--fg-3); line-height: 1.6; }
+
+  /* MOBILE SECTION */
+  .mobile-section { padding: 96px 0; background: var(--bg); }
+  .mobile-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 72px; align-items: center; }
+  @media (max-width: 768px) { .mobile-inner { grid-template-columns: 1fr; } }
+  .mobile-text h2 { font-size: clamp(26px, 3.5vw, 40px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 16px; }
+  .mobile-text p { font-size: 16px; color: var(--fg-2); line-height: 1.7; margin-bottom: 28px; }
+  .mobile-list { list-style: none; display: flex; flex-direction: column; gap: 14px; }
+  .mobile-list li { display: flex; align-items: flex-start; gap: 12px; font-size: 14px; color: var(--fg-2); line-height: 1.5; }
+  .mobile-list-icon { width: 28px; height: 28px; border-radius: 8px; background: color-mix(in srgb, var(--brand) 10%, transparent); color: var(--brand); display: flex; align-items: center; justify-content: center; flex-shrink: 0; margin-top: 1px; }
+
+  /* Phone mockup */
+  .phone-wrap { display: flex; justify-content: center; }
+  .phone { width: 260px; border-radius: 40px; background: #1a1a2e; box-shadow: 0 0 0 8px #0f0f1a, 0 32px 80px rgba(0,0,0,0.35), 0 8px 24px rgba(0,0,0,0.2); position: relative; overflow: hidden; }
+  .phone-notch { width: 90px; height: 26px; background: #0f0f1a; border-radius: 0 0 18px 18px; margin: 0 auto; position: relative; z-index: 2; }
+  .phone-screen { padding: 0 0 32px; background: linear-gradient(160deg, #1e1b4b 0%, #312e81 60%, #4338ca 100%); min-height: 480px; }
+  .phone-statusbar { display: flex; justify-content: space-between; align-items: center; padding: 4px 20px 10px; font-size: 11px; font-weight: 600; color: rgba(255,255,255,0.9); font-family: system-ui; }
+  .phone-statusbar-icons { display: flex; gap: 5px; align-items: center; }
+  .phone-lock { padding: 16px 16px 0; }
+  .phone-time { font-size: 52px; font-weight: 200; color: white; text-align: center; letter-spacing: -0.02em; line-height: 1; margin-bottom: 4px; font-family: system-ui; }
+  .phone-date { font-size: 13px; color: rgba(255,255,255,0.7); text-align: center; margin-bottom: 24px; }
+  .phone-notifs { display: flex; flex-direction: column; gap: 8px; }
+  .phone-notif { background: rgba(255,255,255,0.15); backdrop-filter: blur(12px); border-radius: 14px; padding: 10px 12px; border: 1px solid rgba(255,255,255,0.1); }
+  .phone-notif.muted { opacity: 0.65; }
+  .phone-notif-app { display: flex; align-items: center; gap: 6px; margin-bottom: 4px; }
+  .phone-notif-app span:first-of-type { font-size: 11px; font-weight: 700; color: rgba(255,255,255,0.9); flex: 1; }
+  .phone-notif-time { font-size: 10px; color: rgba(255,255,255,0.5); }
+  .phone-notif-title { font-size: 12px; font-weight: 600; color: white; margin-bottom: 2px; line-height: 1.35; }
+  .phone-notif-body { font-size: 11px; color: rgba(255,255,255,0.7); line-height: 1.45; }
 
   /* AI SECTION */
   .ai-section { padding: 96px 0; background: var(--bg-2); }
