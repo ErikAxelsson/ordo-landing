@@ -62,9 +62,9 @@ a{color:var(--brand-500);text-decoration:none}
 a:hover{text-decoration:underline}
 .topbar{position:sticky;top:0;z-index:50;background:color-mix(in oklch,var(--bg-page) 82%,transparent);backdrop-filter:saturate(140%) blur(14px);border-bottom:1px solid var(--border-subtle)}
 .topbar-inner{max-width:1200px;margin:0 auto;padding:16px 32px;display:flex;align-items:center;justify-content:space-between}
-.brand{display:flex;align-items:center;gap:10px;color:var(--fg-primary);text-decoration:none}
-.brand-mark{width:26px;height:26px}
-.brand-text{font-family:var(--font-display);font-size:24px;letter-spacing:-0.015em;line-height:1}
+/* Logo pill-badge · Gradient·brand (§5c) */
+.brand-pill{display:inline-flex;align-items:center;gap:10px;padding:10px 19px 10px 13px;background:linear-gradient(160deg,#5C7AE0 0%,#3D5BC7 55%,#2A3F9E 100%);border-radius:999px;color:#fff;text-decoration:none;box-shadow:0 8px 22px color-mix(in oklch,#3D5BC7 32%,transparent);flex-shrink:0}
+.brand-pill-text{font-family:var(--font-display);font-size:30px;line-height:1;letter-spacing:-0.015em}
 .theme-toggle{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);border-radius:999px;color:var(--fg-secondary);cursor:pointer}
 .theme-toggle svg{width:16px;height:16px}
 [data-theme="light"] .icon-sun{display:none}
@@ -88,15 +88,15 @@ h1{font-family:var(--font-display);font-size:clamp(36px,6vw,56px);line-height:1.
 <body>
 <header class="topbar">
   <div class="topbar-inner">
-    <a href="/" class="brand">
-      <svg class="brand-mark" viewBox="0 0 64 64" fill="none">
-        <rect x="10" y="38" width="6.5" height="12" rx="3.25" fill="currentColor" opacity="0.45"/>
-        <rect x="19.5" y="32" width="6.5" height="18" rx="3.25" fill="currentColor" opacity="0.60"/>
-        <rect x="29" y="25" width="6.5" height="25" rx="3.25" fill="currentColor" opacity="0.78"/>
+    <a href="/" class="brand-pill" aria-label="Ordo">
+      <svg width="24" height="24" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <rect x="10"   y="38" width="6.5" height="12" rx="3.25" fill="currentColor" opacity="0.50"/>
+        <rect x="19.5" y="32" width="6.5" height="18" rx="3.25" fill="currentColor" opacity="0.65"/>
+        <rect x="29"   y="25" width="6.5" height="25" rx="3.25" fill="currentColor" opacity="0.80"/>
         <rect x="38.5" y="18" width="6.5" height="32" rx="3.25" fill="currentColor"/>
-        <rect x="48" y="13" width="6.5" height="37" rx="3.25" fill="var(--logo-accent)"/>
+        <rect x="48"   y="13" width="6.5" height="37" rx="3.25" fill="#FFD9A0"/>
       </svg>
-      <span class="brand-text">Ordo</span>
+      <span class="brand-pill-text">Ordo</span>
     </a>
     <button class="theme-toggle" id="themeToggle" aria-label="Växla tema" type="button">
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>

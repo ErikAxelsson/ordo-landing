@@ -1,0 +1,2137 @@
+<!doctype html>
+<html lang="sv" data-theme="light">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width,initial-scale=1"/>
+<title>Ordo — Ordning på familjens ekonomi</title>
+<meta name="description" content="Ett lugnt system för familjens ekonomi. Löner, lån, sparande och balansräkning — på ett ställe, för båda i hushållet."/>
+
+<!--
+═══════════════════════════════════════════════════════════════════
+  ORDO — EXTERNAL LANDING PAGE
+  ───────────────────────────────────────────────────────────────
+  Theme:         Light (default). Dark via [data-theme="dark"] on <html>.
+  Tokens:        Mirror of /design-system.md. Do NOT introduce new colors
+                 or font sizes here — extend the token block instead.
+  Stack:         Plain HTML + CSS. No frameworks. Suitable for Astro,
+                 Next/app-router or any static host. JS is ~30 lines for
+                 theme toggle + scroll-link highlight.
+  Sections:      1  Topbar (sticky, blur-glass)
+                 2  Hero  (h1 + lead + inline waitlist form + 3-stat strip)
+                 3  Funktioner (6-cell grid: Månadsbudget / Lån & räntor /
+                    Balansräkning / Sparmål / Familjevy / AI-analys)
+                 4  Deep dives x3:
+                       · Dashboard mock ("Hela familjens ekonomi i en bild")
+                       · Lån & räntor (Riksbanken live + scenario slider)
+                       · Notiser     (iPhone lock-screen mockup)
+                 5  AI-analys (74/100 finansiell hälsa + Claude-genererad quote)
+                 6  För vem (3 scenario quote cards)
+                 7  Principer (4 manifesto cells)
+                 8  FAQ (6 details/summary)
+                 9  CTA  ("Ordo lanserar snart" + email form)
+                 10 Footer (brand + 3 link cols + legal strip)
+  Mockups:       All "screenshots" are rendered inline (HTML + SVG) using
+                 the design-system tokens. They scale crisply and stay in
+                 sync with the real app's tokens. See .mock-*, .phone, .ai-*
+                 and .health-donut classes.
+  Forms:         Both email forms call submitWaitlist(event, source). Stub
+                 does optimistic UI. TODO (dev): POST to /api/waitlist with
+                 { email, source }. See <script> at end of file.
+  Copy:          Swedish. Numbers use tabular-nums via font-feature-settings.
+  Logo:          Inline SVG (.brand-mark) for nav + footer. Full squircle
+                 lives at /assets/app-icon.svg.
+  A11y:          AA contrast in both themes. Form has sr-only label and
+                 native required validation. Details/summary for FAQ.
+═══════════════════════════════════════════════════════════════════
+-->
+
+<link rel="preconnect" href="https://fonts.googleapis.com"/>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+<link href="https://fonts.googleapis.com/css2?family=Geist:wght@400;500;600;700&family=Geist+Mono:wght@400;500&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet"/>
+
+<style>
+/* ════════════════════════════════════════════════════════════════
+   ORDO — DESIGN TOKENS  (mirror of design-system.md)
+   ════════════════════════════════════════════════════════════════ */
+:root {
+  /* Type */
+  --font-ui:      'Geist', ui-sans-serif, system-ui, sans-serif;
+  --font-display: 'Instrument Serif', Georgia, serif;
+  --font-mono:    'Geist Mono', ui-monospace, 'SF Mono', monospace;
+
+  /* Spacing (4px base) */
+  --space-1:4px; --space-2:8px; --space-3:12px; --space-4:16px;
+  --space-5:20px; --space-6:24px; --space-8:32px; --space-10:40px;
+  --space-12:48px; --space-16:64px; --space-20:80px; --space-24:96px;
+
+  /* Radius */
+  --radius-xs:4px; --radius-sm:6px; --radius-md:10px;
+  --radius-lg:14px; --radius-xl:20px; --radius-2xl:28px;
+  --radius-pill:999px;
+
+  /* Type scale */
+  --text-xs:11px; --text-sm:13px; --text-base:15px; --text-md:17px;
+  --text-lg:20px; --text-xl:24px; --text-2xl:30px; --text-3xl:38px;
+  --text-4xl:52px; --text-5xl:64px; --text-display:84px;
+
+  /* Brand */
+  --brand-500: oklch(0.58 0.13 252);
+  --brand-600: oklch(0.50 0.13 252);
+  --brand-700: oklch(0.42 0.12 252);
+  --accent-500: oklch(0.68 0.11 55);
+  --accent-600: oklch(0.60 0.12 55);
+
+  /* Semantic */
+  --success: oklch(0.62 0.12 155);
+  --warning: oklch(0.72 0.13 75);
+  --danger:  oklch(0.60 0.18 22);
+  --info:    oklch(0.62 0.11 230);
+
+  /* Member palette */
+  --member-1: oklch(0.62 0.14 252);
+  --member-2: oklch(0.62 0.14 28);
+  --member-3: oklch(0.62 0.14 150);
+  --member-4: oklch(0.72 0.13 75);
+
+  /* Chart palette */
+  --chart-income:  oklch(0.65 0.12 155);
+  --chart-expense: oklch(0.62 0.16 22);
+  --chart-saving:  oklch(0.62 0.13 252);
+
+  /* Motion */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --dur-fast: 120ms;
+  --dur-base: 200ms;
+}
+
+/* Light theme (default for external site) */
+[data-theme="light"], :root {
+  --bg-canvas:    oklch(0.985 0.003 90);
+  --bg-page:      oklch(0.978 0.005 80);   /* slightly warmer page bg */
+  --bg-surface:   oklch(1 0 0);
+  --bg-surface-2: oklch(0.97 0.005 90);
+  --bg-input:     oklch(0.98 0.004 90);
+  --bg-hover:     oklch(0.95 0.005 90);
+  --bg-ink:       oklch(0.20 0.012 250);   /* inverted surface for CTAs */
+  --bg-band:      oklch(0.95 0.012 80);    /* warm tinted band */
+
+  --fg-primary:   oklch(0.20 0.012 250);
+  --fg-secondary: oklch(0.40 0.010 250);
+  --fg-tertiary:  oklch(0.55 0.008 250);
+  --fg-muted:     oklch(0.68 0.008 250);
+  --fg-on-ink:    oklch(0.96 0.005 250);
+
+  --border:        oklch(0.90 0.006 250);
+  --border-strong: oklch(0.78 0.008 250);
+  --border-subtle: oklch(0.94 0.005 250);
+
+  --shadow-sm: 0 1px 2px rgba(20,30,50,0.04);
+  --shadow-md: 0 4px 14px rgba(20,30,50,0.06);
+  --shadow-lg: 0 18px 48px rgba(20,30,50,0.10);
+  --shadow-xl: 0 32px 80px rgba(20,30,50,0.14);
+
+  --logo-accent: oklch(0.60 0.13 55);
+  color-scheme: light;
+}
+
+[data-theme="dark"] {
+  --bg-canvas:    oklch(0.18 0.012 250);
+  --bg-page:      oklch(0.16 0.012 250);
+  --bg-surface:   oklch(0.22 0.012 250);
+  --bg-surface-2: oklch(0.26 0.013 250);
+  --bg-input:     oklch(0.24 0.012 250);
+  --bg-hover:     oklch(0.28 0.013 250);
+  --bg-ink:       oklch(0.96 0.005 250);
+  --bg-band:      oklch(0.21 0.013 250);
+
+  --fg-primary:   oklch(0.96 0.005 250);
+  --fg-secondary: oklch(0.78 0.008 250);
+  --fg-tertiary:  oklch(0.58 0.010 250);
+  --fg-muted:     oklch(0.48 0.010 250);
+  --fg-on-ink:    oklch(0.20 0.012 250);
+
+  --border:        oklch(0.32 0.012 250);
+  --border-strong: oklch(0.42 0.013 250);
+  --border-subtle: oklch(0.26 0.012 250);
+
+  --shadow-sm: 0 1px 2px rgba(0,0,0,0.35);
+  --shadow-md: 0 4px 14px rgba(0,0,0,0.4);
+  --shadow-lg: 0 18px 48px rgba(0,0,0,0.5);
+  --shadow-xl: 0 32px 80px rgba(0,0,0,0.6);
+
+  --logo-accent: oklch(0.72 0.11 55);
+  color-scheme: dark;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   BASE
+   ════════════════════════════════════════════════════════════════ */
+*, *::before, *::after { box-sizing: border-box; }
+html, body { margin: 0; padding: 0; }
+html { scroll-behavior: smooth; }
+body {
+  font-family: var(--font-ui);
+  font-size: var(--text-base);
+  line-height: 1.55;
+  color: var(--fg-primary);
+  background: var(--bg-page);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: "ss01", "cv11";
+  font-variant-numeric: tabular-nums;
+}
+h1,h2,h3,h4,h5,h6 { margin: 0; font-weight: 500; letter-spacing: -0.015em; }
+p { margin: 0; }
+a { color: inherit; text-decoration: none; }
+img, svg { display: block; max-width: 100%; }
+.num { font-variant-numeric: tabular-nums; font-feature-settings: "tnum"; }
+.mono { font-family: var(--font-mono); }
+.serif { font-family: var(--font-display); font-weight: 400; }
+.muted { color: var(--fg-tertiary); }
+
+/* ════════════════════════════════════════════════════════════════
+   LAYOUT
+   ════════════════════════════════════════════════════════════════ */
+.wrap { max-width: 1200px; margin: 0 auto; padding: 0 var(--space-8); }
+.wrap-narrow { max-width: 920px; margin: 0 auto; padding: 0 var(--space-8); }
+
+.section { padding: var(--space-24) 0; }
+.section-tight { padding: var(--space-16) 0; }
+.section-header { margin-bottom: var(--space-12); max-width: 720px; }
+.section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--fg-tertiary);
+  margin-bottom: var(--space-4);
+  display: inline-flex; align-items: center; gap: 10px;
+  white-space: nowrap;
+}
+.section-eyebrow::before {
+  content: ""; width: 22px; height: 1px; background: var(--border-strong);
+}
+.section-title {
+  font-family: var(--font-display);
+  font-size: var(--text-4xl);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  color: var(--fg-primary);
+}
+.section-title em { font-style: italic; color: var(--brand-500); }
+.section-lead {
+  margin-top: var(--space-5);
+  color: var(--fg-secondary);
+  font-size: var(--text-md);
+  max-width: 60ch;
+  line-height: 1.55;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   TOPBAR
+   ════════════════════════════════════════════════════════════════ */
+.topbar {
+  position: sticky; top: 0; z-index: 50;
+  background: color-mix(in oklch, var(--bg-page) 82%, transparent);
+  backdrop-filter: saturate(140%) blur(14px);
+  -webkit-backdrop-filter: saturate(140%) blur(14px);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.topbar-inner {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: var(--space-4) var(--space-8);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-6);
+}
+.brand {
+  display: flex; align-items: center; gap: 10px;
+  color: var(--fg-primary);
+}
+.brand-mark { width: 26px; height: 26px; }
+.brand-text {
+  font-family: var(--font-display);
+  font-size: 24px;
+  letter-spacing: -0.015em;
+  line-height: 1;
+}
+.nav-links {
+  display: flex; align-items: center; gap: var(--space-2);
+}
+.nav-links a {
+  font-size: var(--text-sm);
+  color: var(--fg-secondary);
+  padding: 8px 14px;
+  border-radius: var(--radius-pill);
+  white-space: nowrap;
+  transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.nav-links a:hover { color: var(--fg-primary); background: var(--bg-hover); }
+
+.nav-actions { display: flex; align-items: center; gap: var(--space-3); }
+.theme-toggle {
+  width: 36px; height: 36px;
+  display: inline-flex; align-items: center; justify-content: center;
+  background: transparent; border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  color: var(--fg-secondary);
+  cursor: pointer;
+  transition: color var(--dur-fast) var(--ease-out), background var(--dur-fast) var(--ease-out);
+}
+.theme-toggle:hover { color: var(--fg-primary); background: var(--bg-hover); }
+.theme-toggle svg { width: 16px; height: 16px; }
+[data-theme="light"] .theme-toggle .icon-sun { display: none; }
+[data-theme="dark"]  .theme-toggle .icon-moon { display: none; }
+
+/* ════════════════════════════════════════════════════════════════
+   BUTTONS
+   ════════════════════════════════════════════════════════════════ */
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  height: 44px; padding: 0 20px;
+  border-radius: var(--radius-pill);
+  font: inherit; font-size: var(--text-sm); font-weight: 500;
+  cursor: pointer; border: 1px solid transparent;
+  white-space: nowrap;
+  transition: background var(--dur-fast) var(--ease-out),
+              border-color var(--dur-fast) var(--ease-out),
+              color var(--dur-fast) var(--ease-out),
+              transform var(--dur-fast) var(--ease-out);
+}
+.btn-primary { background: var(--bg-ink); color: var(--fg-on-ink); }
+.btn-primary:hover { background: var(--brand-600); }
+.btn-secondary {
+  background: transparent; color: var(--fg-primary);
+  border-color: var(--border-strong);
+}
+.btn-secondary:hover { background: var(--bg-hover); border-color: var(--fg-primary); }
+.btn-ghost { background: transparent; color: var(--fg-secondary); }
+.btn-ghost:hover { color: var(--fg-primary); background: var(--bg-hover); }
+.btn-sm { height: 36px; padding: 0 14px; font-size: var(--text-sm); }
+.btn-lg { height: 52px; padding: 0 26px; font-size: var(--text-md); }
+
+.arrow { width: 14px; height: 14px; }
+
+/* Hero email form */
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); border: 0; }
+.hero-form {
+  margin-top: var(--space-8);
+  display: flex; gap: 8px; max-width: 480px;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  padding: 6px 6px 6px 18px;
+  box-shadow: var(--shadow-sm);
+  transition: border-color var(--dur-fast) var(--ease-out), box-shadow var(--dur-fast) var(--ease-out);
+}
+.hero-form:focus-within {
+  border-color: var(--brand-500);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--brand-500) 18%, transparent);
+}
+.hero-form input {
+  flex: 1; min-width: 0;
+  background: transparent; border: 0; outline: 0;
+  font: inherit; font-size: var(--text-md);
+  color: var(--fg-primary);
+  padding: 0;
+}
+.hero-form input::placeholder { color: var(--fg-muted); }
+.hero-form button { flex-shrink: 0; height: 44px; }
+.hero-form-note {
+  margin-top: var(--space-3);
+  font-size: 10.5px;
+  letter-spacing: 0.12em;
+  color: var(--fg-muted);
+}
+.hero-form.success {
+  border-color: var(--success);
+  background: color-mix(in oklch, var(--success) 6%, var(--bg-surface));
+}
+
+/* ════════════════════════════════════════════════════════════════
+   HERO
+   ════════════════════════════════════════════════════════════════ */
+.hero {
+  padding: var(--space-20) 0 var(--space-12);
+  position: relative; overflow: hidden;
+}
+.hero::before {
+  /* soft warm halo behind hero */
+  content: "";
+  position: absolute;
+  inset: -20% -10% auto auto;
+  width: 720px; height: 720px;
+  background: radial-gradient(closest-side,
+    color-mix(in oklch, var(--accent-500) 28%, transparent) 0%,
+    transparent 70%);
+  pointer-events: none; z-index: 0;
+  filter: blur(20px);
+}
+.hero-grid {
+  position: relative; z-index: 1;
+  display: grid; grid-template-columns: 1fr; gap: var(--space-12);
+  align-items: center;
+}
+@media (min-width: 980px) {
+  .hero-grid { grid-template-columns: 1.05fr 1fr; gap: var(--space-16); }
+}
+.hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 10px;
+  padding: 6px 14px 6px 6px;
+  border: 1px solid var(--border);
+  border-radius: var(--radius-pill);
+  background: var(--bg-surface);
+  font-size: var(--text-sm); color: var(--fg-secondary);
+  margin-bottom: var(--space-6);
+}
+.hero-eyebrow .dot {
+  width: 8px; height: 8px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 4px color-mix(in oklch, var(--success) 18%, transparent);
+}
+.hero-eyebrow strong { color: var(--fg-primary); font-weight: 500; }
+
+.hero h1 {
+  font-family: var(--font-display);
+  font-size: clamp(48px, 8vw, var(--text-display));
+  line-height: 0.96;
+  letter-spacing: -0.025em;
+  font-weight: 400;
+  color: var(--fg-primary);
+}
+.hero h1 em {
+  font-style: italic;
+  color: var(--brand-500);
+  position: relative;
+}
+.hero-lead {
+  margin-top: var(--space-6);
+  font-size: var(--text-lg);
+  color: var(--fg-secondary);
+  line-height: 1.5;
+  max-width: 48ch;
+}
+.hero-cta { margin-top: var(--space-8); display: flex; gap: var(--space-3); flex-wrap: wrap; }
+.hero-meta {
+  margin-top: var(--space-10);
+  display: flex; gap: var(--space-8); flex-wrap: wrap;
+  border-top: 1px solid var(--border-subtle);
+  padding-top: var(--space-6);
+}
+.hero-meta-item .label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  text-transform: uppercase;
+  letter-spacing: 0.10em;
+  color: var(--fg-muted);
+}
+.hero-meta-item .value {
+  font-family: var(--font-display);
+  font-size: 28px;
+  margin-top: 2px;
+  color: var(--fg-primary);
+}
+
+/* Hero visual — tilted mini-dashboard */
+.hero-visual {
+  position: relative;
+  perspective: 1800px;
+  isolation: isolate;
+}
+.hero-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-xl);
+  overflow: hidden;
+  transform: rotate(-1.2deg);
+}
+.hero-card-2 {
+  position: absolute; right: -20px; bottom: -30px;
+  width: 62%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-lg);
+  padding: 16px 18px;
+  transform: rotate(2deg);
+  z-index: 2;
+}
+.hero-card-3 {
+  position: absolute; left: -28px; top: 18%;
+  width: 50%;
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  box-shadow: var(--shadow-md);
+  padding: 14px 16px;
+  transform: rotate(-3deg);
+  z-index: 1;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   APP MOCKUPS  (used in hero + feature sections)
+   ════════════════════════════════════════════════════════════════ */
+.mock {
+  background: var(--bg-canvas);
+  color: var(--fg-primary);
+  font-family: var(--font-ui);
+  font-size: 12px;
+  line-height: 1.4;
+}
+.mock-chrome {
+  height: 32px;
+  background: var(--bg-surface-2);
+  border-bottom: 1px solid var(--border-subtle);
+  display: flex; align-items: center; padding: 0 12px; gap: 8px;
+}
+.mock-dots { display: flex; gap: 6px; }
+.mock-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--border-strong); }
+.mock-dot.r { background: #ed6a5e; }
+.mock-dot.y { background: #f4be4f; }
+.mock-dot.g { background: #61c554; }
+.mock-url {
+  flex: 1; margin-left: 8px; height: 20px;
+  background: var(--bg-canvas);
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 0 10px;
+  display: flex; align-items: center;
+  font-family: var(--font-mono); font-size: 10px;
+  color: var(--fg-tertiary);
+  max-width: 320px;
+}
+.mock-body { padding: 20px 24px; }
+
+.mock-section-eyebrow {
+  font-family: var(--font-mono);
+  font-size: 10px;
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  color: var(--fg-tertiary);
+}
+.mock-h {
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: -0.015em;
+  color: var(--fg-primary);
+  margin-top: 2px;
+}
+.mock-row { display: grid; gap: 12px; }
+.mock-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: 14px 16px;
+}
+.mock-card .label {
+  font-family: var(--font-mono);
+  font-size: 9.5px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-tertiary);
+}
+.mock-card .num {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--fg-primary);
+  margin-top: 4px;
+}
+.mock-card .num small {
+  font-family: var(--font-mono);
+  font-size: 12px;
+  color: var(--fg-tertiary);
+  margin-left: 4px;
+  letter-spacing: 0;
+}
+.mock-card .delta { font-size: 11px; margin-top: 6px; }
+.delta.pos { color: var(--success); }
+.delta.neg { color: var(--danger); }
+
+.member-row { display: flex; align-items: center; gap: 10px; padding: 10px 0; border-top: 1px solid var(--border-subtle); }
+.member-row:first-child { border-top: 0; }
+.avatar {
+  width: 26px; height: 26px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #fff; font-size: 11px; font-weight: 600;
+  flex-shrink: 0;
+}
+.avatar.m1 { background: var(--member-1); }
+.avatar.m2 { background: var(--member-2); }
+.avatar.m3 { background: var(--member-3); }
+.avatar.m4 { background: var(--member-4); }
+.member-row .name { font-size: 12px; font-weight: 500; flex: 1; }
+.member-row .val { font-family: var(--font-mono); font-size: 12px; color: var(--fg-secondary); }
+
+/* Bar mini-chart */
+.bars { display: flex; align-items: flex-end; gap: 4px; height: 64px; padding-top: 4px; }
+.bars .b {
+  flex: 1; min-width: 6px;
+  background: var(--brand-500);
+  border-radius: 2px 2px 0 0;
+  opacity: 0.85;
+}
+.bars .b.expense { background: var(--chart-expense); }
+.bars .b.income  { background: var(--chart-income); }
+.bars .b.saving  { background: var(--chart-saving); }
+
+/* Inline SVG line chart helpers */
+.line-chart { width: 100%; height: auto; display: block; }
+.line-chart .axis { stroke: var(--border); stroke-width: 1; }
+.line-chart .grid { stroke: var(--border-subtle); stroke-width: 1; stroke-dasharray: 2 4; }
+.line-chart .tick { font-family: var(--font-mono); font-size: 9px; fill: var(--fg-tertiary); }
+.line-chart .line-1 { stroke: var(--member-1); stroke-width: 1.75; fill: none; }
+.line-chart .line-2 { stroke: var(--member-2); stroke-width: 1.75; fill: none; }
+.line-chart .line-3 { stroke: var(--success); stroke-width: 1.75; fill: none; }
+.line-chart .dot-1 { fill: var(--member-1); }
+.line-chart .dot-2 { fill: var(--member-2); }
+.line-chart .area-1 { fill: color-mix(in oklch, var(--member-1) 12%, transparent); }
+
+/* ════════════════════════════════════════════════════════════════
+   HERO MOCK content sizing
+   ════════════════════════════════════════════════════════════════ */
+.hero-mini-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px; }
+.hero-mini-label { font-family: var(--font-mono); font-size: 9.5px; letter-spacing: 0.12em; text-transform: uppercase; color: var(--fg-tertiary); }
+.hero-mini-num { font-family: var(--font-display); font-size: 22px; margin-top: 4px; letter-spacing: -0.01em; }
+.hero-mini-num small { font-family: var(--font-mono); font-size: 11px; color: var(--fg-tertiary); margin-left: 2px; }
+
+/* ════════════════════════════════════════════════════════════════
+   PILLARS (3 columns)
+   ════════════════════════════════════════════════════════════════ */
+.pillars {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--space-6);
+  margin-top: var(--space-8);
+}
+@media (min-width: 880px) {
+  .pillars { grid-template-columns: repeat(3, 1fr); }
+}
+.pillar {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  display: flex; flex-direction: column; gap: var(--space-3);
+}
+.pillar-num {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  color: var(--fg-tertiary);
+}
+.pillar h3 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  line-height: 1.1;
+  letter-spacing: -0.015em;
+  color: var(--fg-primary);
+  margin-top: 2px;
+}
+.pillar p {
+  font-size: var(--text-base);
+  color: var(--fg-secondary);
+  line-height: 1.55;
+  flex: 1;
+}
+.pillar-figure {
+  margin-top: var(--space-5);
+  padding-top: var(--space-5);
+  border-top: 1px solid var(--border-subtle);
+  min-height: 72px;
+  display: flex; align-items: center; gap: 14px;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   FEATURE DEEP DIVES
+   ════════════════════════════════════════════════════════════════ */
+.feature {
+  display: grid; grid-template-columns: 1fr; gap: var(--space-10);
+  align-items: center;
+}
+@media (min-width: 980px) {
+  .feature { grid-template-columns: 5fr 7fr; gap: var(--space-16); }
+  .feature.reverse > :first-child { order: 2; }
+}
+.feature + .feature { margin-top: var(--space-24); }
+.feature-copy h3 {
+  font-family: var(--font-display);
+  font-size: var(--text-3xl);
+  line-height: 1.1;
+  letter-spacing: -0.02em;
+  color: var(--fg-primary);
+  margin-top: var(--space-3);
+}
+.feature-copy p {
+  margin-top: var(--space-5);
+  color: var(--fg-secondary);
+  font-size: var(--text-md);
+  line-height: 1.55;
+}
+.feature-list {
+  margin-top: var(--space-6);
+  display: flex; flex-direction: column; gap: var(--space-3);
+  list-style: none; padding: 0;
+}
+.feature-list li {
+  display: flex; align-items: flex-start; gap: 12px;
+  font-size: var(--text-base);
+  color: var(--fg-secondary);
+}
+.feature-list .check {
+  flex-shrink: 0;
+  width: 22px; height: 22px;
+  margin-top: 1px;
+  border-radius: 50%;
+  background: color-mix(in oklch, var(--brand-500) 12%, transparent);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--brand-500);
+}
+.feature-list .check svg { width: 12px; height: 12px; }
+.feature-list b { color: var(--fg-primary); font-weight: 500; }
+
+.feature-mock {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-lg);
+  overflow: hidden;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   6-FEATURE GRID
+   ════════════════════════════════════════════════════════════════ */
+.features-grid {
+  display: grid; grid-template-columns: 1fr;
+  gap: 0;
+  margin-top: var(--space-8);
+  border-top: 1px solid var(--border);
+  border-left: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  overflow: hidden;
+  background: var(--bg-surface);
+  box-shadow: var(--shadow-md);
+}
+@media (min-width: 720px) { .features-grid { grid-template-columns: 1fr 1fr; } }
+@media (min-width: 1024px) { .features-grid { grid-template-columns: repeat(3, 1fr); } }
+.feature-cell {
+  padding: var(--space-8) var(--space-8) var(--space-10);
+  border-right: 1px solid var(--border);
+  border-bottom: 1px solid var(--border);
+  display: flex; flex-direction: column; gap: var(--space-3);
+  position: relative;
+  transition: background var(--dur-base) var(--ease-out);
+}
+.feature-cell:hover { background: var(--bg-surface-2); }
+.feature-cell .icon {
+  width: 36px; height: 36px;
+  border-radius: var(--radius-md);
+  background: color-mix(in oklch, var(--brand-500) 8%, transparent);
+  color: var(--brand-500);
+  display: inline-flex; align-items: center; justify-content: center;
+  margin-bottom: var(--space-4);
+}
+.feature-cell .icon svg { width: 18px; height: 18px; }
+.feature-cell.ai .icon {
+  background: color-mix(in oklch, var(--accent-500) 14%, transparent);
+  color: var(--accent-600);
+}
+.feature-cell .eyebrow {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-tertiary);
+}
+.feature-cell h3 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  letter-spacing: -0.015em;
+  line-height: 1.15;
+  color: var(--fg-primary);
+  margin-top: 2px;
+}
+.feature-cell p {
+  color: var(--fg-secondary);
+  font-size: var(--text-base);
+  line-height: 1.55;
+  margin-top: var(--space-2);
+}
+.feature-cell .detail {
+  margin-top: auto;
+  padding-top: var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.04em;
+  color: var(--fg-tertiary);
+  display: flex; align-items: center; gap: 6px;
+}
+.feature-cell .detail .dot-live {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--success);
+  box-shadow: 0 0 0 3px color-mix(in oklch, var(--success) 18%, transparent);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   PHONE MOCKUP
+   ════════════════════════════════════════════════════════════════ */
+.phone {
+  width: 320px;
+  margin: 0 auto;
+  background: oklch(0.14 0.012 250);
+  border-radius: 44px;
+  padding: 12px;
+  box-shadow:
+    var(--shadow-xl),
+    0 0 0 1px oklch(0.30 0.012 250) inset;
+  position: relative;
+  aspect-ratio: 9/19;
+  max-width: 100%;
+}
+.phone-screen {
+  width: 100%; height: 100%;
+  border-radius: 34px;
+  background: linear-gradient(160deg,
+    oklch(0.42 0.06 252) 0%,
+    oklch(0.32 0.04 252) 60%,
+    oklch(0.22 0.02 252) 100%);
+  overflow: hidden;
+  position: relative;
+  color: #fff;
+  padding: 20px 14px 14px;
+  display: flex; flex-direction: column;
+}
+.phone-notch {
+  position: absolute;
+  top: 12px; left: 50%; transform: translateX(-50%);
+  width: 100px; height: 26px;
+  background: oklch(0.10 0.012 250);
+  border-radius: 13px;
+  z-index: 2;
+}
+.phone-status {
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-ui);
+  font-size: 13px;
+  font-weight: 600;
+  padding: 0 8px;
+  position: relative; z-index: 1;
+}
+.phone-status .icons { display: inline-flex; gap: 5px; align-items: center; }
+.phone-status svg { width: 14px; height: 14px; }
+.phone-lock-time {
+  text-align: center;
+  margin-top: 24px;
+  position: relative; z-index: 1;
+}
+.phone-lock-date {
+  font-family: var(--font-ui);
+  font-size: 14px;
+  font-weight: 500;
+  opacity: 0.85;
+}
+.phone-lock-clock {
+  font-family: var(--font-ui);
+  font-weight: 200;
+  font-size: 72px;
+  letter-spacing: -0.02em;
+  line-height: 1;
+  margin-top: 2px;
+}
+.phone-notifs {
+  margin-top: 24px;
+  display: flex; flex-direction: column; gap: 8px;
+  flex: 1;
+}
+.phone-notif {
+  background: color-mix(in oklch, oklch(0.18 0.012 250) 70%, transparent);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-radius: 16px;
+  padding: 10px 12px;
+  display: grid;
+  grid-template-columns: 28px 1fr auto;
+  gap: 8px;
+  align-items: center;
+}
+.phone-notif .app-icon {
+  width: 28px; height: 28px;
+  border-radius: 7px;
+  background: linear-gradient(160deg, #5C7AE0, #2A3F9E);
+  display: inline-flex; align-items: center; justify-content: center;
+  color: #fff;
+}
+.phone-notif .app-icon svg { width: 16px; height: 16px; }
+.phone-notif .title {
+  font-size: 12px; font-weight: 600;
+  display: flex; align-items: center; gap: 6px;
+}
+.phone-notif .title .app { font-weight: 500; opacity: 0.85; }
+.phone-notif .time {
+  font-size: 11px;
+  opacity: 0.7;
+  font-variant-numeric: tabular-nums;
+}
+.phone-notif .body {
+  grid-column: 2 / -1;
+  font-size: 12px;
+  opacity: 0.92;
+  line-height: 1.35;
+  margin-top: 2px;
+}
+.phone-bottom {
+  display: flex; justify-content: space-between;
+  padding: 0 24px;
+  margin-top: auto;
+}
+.phone-bottom button {
+  width: 40px; height: 40px;
+  border-radius: 50%;
+  background: rgba(255,255,255,0.18);
+  border: 0;
+  backdrop-filter: blur(20px);
+  color: #fff;
+  display: inline-flex; align-items: center; justify-content: center;
+}
+.phone-bottom svg { width: 18px; height: 18px; }
+
+/* ════════════════════════════════════════════════════════════════
+   AI ANALYSIS
+   ════════════════════════════════════════════════════════════════ */
+.ai-section {
+  background: var(--bg-band);
+  border-top: 1px solid var(--border-subtle);
+  border-bottom: 1px solid var(--border-subtle);
+}
+.ai-grid {
+  display: grid; grid-template-columns: 1fr;
+  gap: var(--space-12);
+  align-items: center;
+}
+@media (min-width: 980px) { .ai-grid { grid-template-columns: 1fr 1fr; gap: var(--space-16); } }
+.ai-mock {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-xl);
+  padding: var(--space-8);
+  box-shadow: var(--shadow-lg);
+  position: relative;
+}
+.ai-mock-header {
+  display: flex; align-items: center; justify-content: space-between;
+  padding-bottom: var(--space-5);
+  border-bottom: 1px solid var(--border-subtle);
+  margin-bottom: var(--space-6);
+}
+.ai-source {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--fg-tertiary);
+  display: inline-flex; align-items: center; gap: 8px;
+  white-space: nowrap;
+}
+.ai-source .pulse {
+  width: 7px; height: 7px; border-radius: 50%;
+  background: var(--accent-500);
+}
+
+.health-row { display: flex; align-items: center; gap: var(--space-6); }
+.health-donut { position: relative; width: 144px; height: 144px; flex-shrink: 0; }
+.health-donut svg { width: 100%; height: 100%; transform: rotate(-90deg); }
+.health-donut .track { fill: none; stroke: var(--bg-surface-2); stroke-width: 12; }
+.health-donut .arc {
+  fill: none;
+  stroke: var(--success);
+  stroke-width: 12;
+  stroke-linecap: round;
+  transition: stroke-dashoffset 800ms var(--ease-out);
+}
+.health-donut .center {
+  position: absolute; inset: 0;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: center;
+  text-align: center;
+}
+.health-donut .score {
+  font-family: var(--font-display);
+  font-size: 48px;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--fg-primary);
+}
+.health-donut .max {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0.10em;
+  color: var(--fg-tertiary);
+  margin-top: 6px;
+}
+.health-label .label-text {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-tertiary);
+}
+.health-label .label-h {
+  font-family: var(--font-display);
+  font-size: 28px;
+  letter-spacing: -0.015em;
+  margin-top: 4px;
+  color: var(--fg-primary);
+}
+.health-label .grade-list {
+  list-style: none; padding: 0; margin: var(--space-4) 0 0;
+  display: flex; flex-direction: column; gap: 6px;
+}
+.health-label .grade-list li {
+  display: flex; align-items: center; justify-content: space-between;
+  gap: 8px;
+  font-size: var(--text-sm);
+  color: var(--fg-secondary);
+}
+.health-label .grade-list .pip {
+  width: 8px; height: 8px; border-radius: 50%; background: var(--success);
+  flex-shrink: 0;
+}
+.health-label .grade-list .pip.warn { background: var(--warning); }
+.health-label .grade-list .num {
+  font-family: var(--font-mono); font-size: 12px; color: var(--fg-tertiary);
+  white-space: nowrap;
+}
+
+.ai-quote {
+  margin-top: var(--space-6);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-subtle);
+}
+.ai-quote .role {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.10em;
+  text-transform: uppercase;
+  color: var(--accent-600);
+  display: inline-flex; align-items: center; gap: 6px;
+}
+.ai-quote .role::before {
+  content: "";
+  width: 14px; height: 14px;
+  background: linear-gradient(135deg, #D97757, #C25B36);
+  border-radius: 4px;
+  display: inline-block;
+}
+.ai-quote blockquote {
+  margin: var(--space-3) 0 0;
+  font-family: var(--font-display);
+  font-size: 22px;
+  line-height: 1.4;
+  letter-spacing: -0.005em;
+  color: var(--fg-primary);
+  font-style: italic;
+}
+.ai-quote .meta {
+  margin-top: var(--space-4);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: 0.08em;
+  color: var(--fg-muted);
+  text-transform: uppercase;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   NOTIFICATION SECTION
+   ════════════════════════════════════════════════════════════════ */
+.notif-grid {
+  display: grid; grid-template-columns: 1fr; gap: var(--space-12);
+  align-items: center;
+}
+@media (min-width: 980px) { .notif-grid { grid-template-columns: 1.1fr 1fr; gap: var(--space-16); } }
+.notif-list {
+  list-style: none; padding: 0; margin: var(--space-8) 0 0;
+  display: flex; flex-direction: column; gap: var(--space-4);
+}
+.notif-list li {
+  display: grid;
+  grid-template-columns: 36px 1fr auto;
+  gap: var(--space-4);
+  align-items: center;
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.notif-list .stamp {
+  width: 36px; height: 36px;
+  border-radius: 50%;
+  background: var(--bg-surface-2);
+  color: var(--brand-500);
+  display: inline-flex; align-items: center; justify-content: center;
+  flex-shrink: 0;
+}
+.notif-list .stamp svg { width: 16px; height: 16px; }
+.notif-list .copy { font-size: var(--text-base); color: var(--fg-secondary); }
+.notif-list .copy b { color: var(--fg-primary); font-weight: 500; }
+.notif-list .when {
+  font-family: var(--font-mono);
+  font-size: 11px;
+  color: var(--fg-tertiary);
+  letter-spacing: 0.06em;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   "FÖR VEM" cards
+   ════════════════════════════════════════════════════════════════ */
+.who {
+  display: grid; grid-template-columns: 1fr; gap: var(--space-4);
+  margin-top: var(--space-8);
+}
+@media (min-width: 880px) { .who { grid-template-columns: repeat(3, 1fr); } }
+.who-card {
+  background: var(--bg-surface);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-lg);
+  padding: var(--space-8);
+  position: relative;
+  overflow: hidden;
+}
+.who-card::before {
+  content: ""; position: absolute; left: 0; top: 0; bottom: 0;
+  width: 3px; background: var(--member-1);
+}
+.who-card.m2::before { background: var(--member-2); }
+.who-card.m3::before { background: var(--member-4); }
+.who-card .scenario {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-tertiary);
+}
+.who-card h4 {
+  font-family: var(--font-display);
+  font-size: 24px;
+  line-height: 1.15;
+  letter-spacing: -0.015em;
+  margin-top: 4px;
+}
+.who-card .quote {
+  margin-top: var(--space-4);
+  font-size: var(--text-base);
+  color: var(--fg-secondary);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: 18px;
+  line-height: 1.4;
+}
+.who-card .by {
+  margin-top: var(--space-5);
+  font-size: var(--text-sm);
+  color: var(--fg-tertiary);
+}
+
+/* ════════════════════════════════════════════════════════════════
+   PRINCIPER
+   ════════════════════════════════════════════════════════════════ */
+.principles {
+  display: grid; grid-template-columns: 1fr; gap: 0;
+  margin-top: var(--space-8);
+  border-top: 1px solid var(--border-subtle);
+}
+@media (min-width: 880px) {
+  .principles { grid-template-columns: 1fr 1fr; }
+  .principles > *:nth-child(2n) { border-left: 1px solid var(--border-subtle); }
+}
+.principle {
+  padding: var(--space-8) 0;
+  border-bottom: 1px solid var(--border-subtle);
+  padding-right: var(--space-8);
+}
+@media (min-width: 880px) {
+  .principles > *:nth-child(2n) { padding-left: var(--space-8); padding-right: 0; }
+}
+.principle .label {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--accent-600);
+}
+.principle h4 {
+  font-family: var(--font-display);
+  font-size: 26px;
+  margin-top: 6px;
+  letter-spacing: -0.015em;
+  color: var(--fg-primary);
+}
+.principle p {
+  margin-top: var(--space-3);
+  color: var(--fg-secondary);
+  line-height: 1.55;
+  max-width: 56ch;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   FAQ
+   ════════════════════════════════════════════════════════════════ */
+.faq { margin-top: var(--space-8); border-top: 1px solid var(--border-subtle); }
+.faq details {
+  border-bottom: 1px solid var(--border-subtle);
+  padding: var(--space-5) 0;
+}
+.faq summary {
+  list-style: none;
+  cursor: pointer;
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-6);
+  font-size: var(--text-lg);
+  font-family: var(--font-display);
+  letter-spacing: -0.01em;
+  color: var(--fg-primary);
+}
+.faq summary::-webkit-details-marker { display: none; }
+.faq summary .plus {
+  width: 26px; height: 26px;
+  border: 1px solid var(--border);
+  border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center;
+  color: var(--fg-secondary);
+  flex-shrink: 0;
+  transition: transform var(--dur-base) var(--ease-out);
+}
+.faq details[open] summary .plus { transform: rotate(45deg); }
+.faq details[open] summary { color: var(--brand-500); }
+.faq p {
+  margin-top: var(--space-3);
+  color: var(--fg-secondary);
+  max-width: 70ch;
+  line-height: 1.6;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   FINAL CTA BAND
+   ════════════════════════════════════════════════════════════════ */
+.cta-band {
+  margin-top: var(--space-16);
+  padding: var(--space-20) var(--space-12);
+  background: var(--bg-band);
+  border: 1px solid var(--border-subtle);
+  border-radius: var(--radius-2xl);
+  display: grid; gap: var(--space-8);
+  grid-template-columns: 1fr; align-items: center;
+  position: relative; overflow: hidden;
+}
+@media (min-width: 880px) { .cta-band { grid-template-columns: 1.4fr 1fr; } }
+.cta-band::after {
+  content: ""; position: absolute; right: -120px; top: -120px;
+  width: 360px; height: 360px;
+  background: radial-gradient(closest-side,
+    color-mix(in oklch, var(--accent-500) 35%, transparent) 0%,
+    transparent 70%);
+  pointer-events: none;
+}
+.cta-band h2 {
+  font-family: var(--font-display);
+  font-size: clamp(36px, 5vw, 56px);
+  line-height: 1.05;
+  letter-spacing: -0.02em;
+  font-weight: 400;
+  position: relative;
+  z-index: 1;
+}
+.cta-band h2 em { font-style: italic; color: var(--brand-500); }
+.cta-band-side { position: relative; z-index: 1; }
+.cta-band-side p { color: var(--fg-secondary); margin-bottom: var(--space-5); }
+.cta-band-side .buttons { display: flex; gap: var(--space-3); flex-wrap: wrap; }
+
+/* ════════════════════════════════════════════════════════════════
+   FOOTER
+   ════════════════════════════════════════════════════════════════ */
+.footer {
+  margin-top: var(--space-20);
+  border-top: 1px solid var(--border-subtle);
+  padding: var(--space-12) 0 var(--space-10);
+}
+.footer-grid {
+  display: grid; grid-template-columns: 2fr 1fr 1fr 1fr;
+  gap: var(--space-10); align-items: flex-start;
+}
+@media (max-width: 720px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
+.footer-brand p {
+  margin-top: var(--space-4);
+  font-size: var(--text-sm);
+  color: var(--fg-tertiary);
+  max-width: 38ch;
+}
+.footer-col h5 {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--fg-tertiary);
+  margin-bottom: var(--space-4);
+}
+.footer-col ul { list-style: none; padding: 0; margin: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.footer-col a { font-size: var(--text-sm); color: var(--fg-secondary); }
+.footer-col a:hover { color: var(--fg-primary); }
+.footer-bottom {
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: 1px solid var(--border-subtle);
+  display: flex; justify-content: space-between; align-items: center;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--fg-tertiary);
+  letter-spacing: 0.04em;
+}
+
+/* ════════════════════════════════════════════════════════════════
+   SCROLLED STATE + small responsive
+   ════════════════════════════════════════════════════════════════ */
+@media (max-width: 720px) {
+  .nav-links { display: none; }
+  .hero-card-3 { display: none; }
+  .hero-card-2 { right: -10px; bottom: -20px; width: 70%; }
+  .section { padding: var(--space-16) 0; }
+  .cta-band { padding: var(--space-12); }
+  .hero-form { flex-direction: column; padding: 10px; border-radius: var(--radius-xl); }
+  .hero-form input { padding: 8px 12px; }
+  .hero-form button { width: 100%; }
+}
+@media (max-width: 980px) {
+  .nav-links a { padding: 8px 10px; font-size: 13px; }
+  .nav-actions .btn-ghost { display: none; }
+}
+@media (max-width: 880px) {
+  .nav-links { display: none; }
+}
+</style>
+</head>
+
+<body>
+
+<!-- ════════════════════════════════════════════════════════════
+     TOPBAR
+     ════════════════════════════════════════════════════════════ -->
+<header class="topbar" role="banner">
+  <div class="topbar-inner">
+    <a href="#top" class="brand" aria-label="Ordo">
+      <!-- Ordo logo mark (flat, inherits currentColor) -->
+      <svg class="brand-mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+        <rect x="10"   y="38" width="6.5" height="12" rx="3.25" fill="currentColor" opacity="0.45"></rect>
+        <rect x="19.5" y="32" width="6.5" height="18" rx="3.25" fill="currentColor" opacity="0.60"></rect>
+        <rect x="29"   y="25" width="6.5" height="25" rx="3.25" fill="currentColor" opacity="0.78"></rect>
+        <rect x="38.5" y="18" width="6.5" height="32" rx="3.25" fill="currentColor"></rect>
+        <rect x="48"   y="13" width="6.5" height="37" rx="3.25" fill="var(--logo-accent)"></rect>
+      </svg>
+      <span class="brand-text">Ordo</span>
+    </a>
+
+    <nav class="nav-links" aria-label="Sektioner">
+      <a href="#funktioner">Funktioner</a>
+      <a href="#notiser">Notiser</a>
+      <a href="#ai-analys">AI-analys</a>
+      <a href="#fragor">Vanliga frågor</a>
+    </nav>
+
+    <div class="nav-actions">
+      <button class="theme-toggle" id="themeToggle" aria-label="Växla tema" type="button">
+        <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"></path>
+        </svg>
+        <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+          <circle cx="12" cy="12" r="4"></circle>
+          <path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"></path>
+        </svg>
+      </button>
+      <a href="#cta" class="btn btn-ghost btn-sm">Logga in</a>
+      <a href="#cta" class="btn btn-primary btn-sm">Anmäl intresse
+        <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+      </a>
+    </div>
+  </div>
+</header>
+
+<main id="top">
+
+<!-- ════════════════════════════════════════════════════════════
+     HERO
+     ════════════════════════════════════════════════════════════ -->
+<section class="hero" data-screen-label="Hero">
+  <div class="wrap hero-grid">
+    <div class="hero-copy">
+      <div class="hero-eyebrow">
+        <span class="dot" aria-hidden="true"></span>
+        <span><strong>Byggt för svenska familjer.</strong> Lansering hösten 2026.</span>
+      </div>
+
+      <h1>
+        Ordning på<br/>
+        <em>familjens</em> ekonomi.
+      </h1>
+
+      <p class="hero-lead">
+        Ordo samlar budget, sparande, lån och tillgångar på ett ställe.
+        Så att ni alltid vet var ni står — och vart ni är på väg.
+      </p>
+
+      <form class="hero-form" id="heroForm" onsubmit="return submitWaitlist(event, 'hero')">
+        <label class="sr-only" for="heroEmail">E-postadress</label>
+        <input id="heroEmail" type="email" required placeholder="din@email.se" autocomplete="email"/>
+        <button class="btn btn-primary" type="submit">Kom med på väntelistan
+          <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+        </button>
+      </form>
+      <p class="hero-form-note mono">INGEN SPAM · BARA ETT MEDDELANDE NÄR ORDO ÄR REDO.</p>
+
+      <div class="hero-meta">
+        <div class="hero-meta-item">
+          <div class="label">Sparat 12 mån</div>
+          <div class="value">+82 400 <span class="mono muted" style="font-size:14px;">kr</span></div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="label">Konton i översikt</div>
+          <div class="value">14</div>
+        </div>
+        <div class="hero-meta-item">
+          <div class="label">Finansiell hälsa</div>
+          <div class="value">74<span class="mono muted" style="font-size:14px;">/100</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hero visual: layered mini-mockups -->
+    <div class="hero-visual" aria-hidden="true">
+      <!-- Card 3 — floats top-left: a single account chip -->
+      <div class="hero-card-3 mock">
+        <div class="mock-section-eyebrow">Konto · ISK</div>
+        <div style="display:flex; align-items:flex-end; justify-content:space-between; margin-top:6px;">
+          <div>
+            <div style="font-family: var(--font-display); font-size: 22px; letter-spacing:-0.01em;">313 183 <span class="mono" style="font-size:11px; color:var(--fg-tertiary);">kr</span></div>
+            <div class="delta pos mono" style="font-size:11px; margin-top:4px;">+4,2 % i år</div>
+          </div>
+          <div class="avatar m2" style="width:22px; height:22px; font-size:10px;">S</div>
+        </div>
+      </div>
+
+      <!-- Card 2 — floats bottom-right: small bar chart -->
+      <div class="hero-card-2 mock">
+        <div class="mock-section-eyebrow">Senaste 6 mån</div>
+        <div class="bars" style="margin-top:8px;">
+          <div class="b income"  style="height: 40%;"></div>
+          <div class="b expense" style="height: 32%;"></div>
+          <div class="b saving"  style="height:  8%;"></div>
+          <div class="b income"  style="height: 44%;"></div>
+          <div class="b expense" style="height: 36%;"></div>
+          <div class="b saving"  style="height:  9%;"></div>
+          <div class="b income"  style="height: 48%;"></div>
+          <div class="b expense" style="height: 30%;"></div>
+          <div class="b saving"  style="height: 12%;"></div>
+          <div class="b income"  style="height: 52%;"></div>
+          <div class="b expense" style="height: 38%;"></div>
+          <div class="b saving"  style="height: 14%;"></div>
+          <div class="b income"  style="height: 50%;"></div>
+          <div class="b expense" style="height: 34%;"></div>
+          <div class="b saving"  style="height: 16%;"></div>
+          <div class="b income"  style="height: 56%;"></div>
+          <div class="b expense" style="height: 36%;"></div>
+          <div class="b saving"  style="height: 20%;"></div>
+        </div>
+        <div class="mono" style="display:flex; justify-content:space-between; font-size:10px; color:var(--fg-tertiary); margin-top:6px;">
+          <span>Nov</span><span>Dec</span><span>Jan</span><span>Feb</span><span>Mar</span><span>Apr</span>
+        </div>
+      </div>
+
+      <!-- Main hero card — dashboard preview -->
+      <div class="hero-card mock">
+        <div class="mock-chrome">
+          <div class="mock-dots"><span class="mock-dot r"></span><span class="mock-dot y"></span><span class="mock-dot g"></span></div>
+          <div class="mock-url">ordo.se/dashboard</div>
+        </div>
+        <div class="mock-body">
+          <div class="mock-section-eyebrow">Översikt · April 2026</div>
+          <div class="mock-h">Hushållet</div>
+
+          <div class="hero-mini-grid">
+            <div>
+              <div class="hero-mini-label">Netto in</div>
+              <div class="hero-mini-num" style="color: var(--success);">+ 84 300<small>kr</small></div>
+            </div>
+            <div>
+              <div class="hero-mini-label">Buffert</div>
+              <div class="hero-mini-num">128 900<small>kr</small></div>
+            </div>
+          </div>
+
+          <div style="margin-top:18px; padding-top:14px; border-top: 1px solid var(--border-subtle);">
+            <div class="mock-section-eyebrow">Familjen</div>
+            <div style="margin-top:8px;">
+              <div class="member-row">
+                <div class="avatar m1">E</div>
+                <div class="name">Erik</div>
+                <div class="val">+ 48 200 kr</div>
+              </div>
+              <div class="member-row">
+                <div class="avatar m2">S</div>
+                <div class="name">Sofie</div>
+                <div class="val">+ 36 100 kr</div>
+              </div>
+              <div class="member-row">
+                <div class="avatar m3" style="background: var(--fg-muted);">G</div>
+                <div class="name">Gemensamt</div>
+                <div class="val">+ 0 kr</div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FUNKTIONER — 6 features grid
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="funktioner" data-screen-label="Funktioner">
+  <div class="wrap">
+    <div class="section-header">
+      <div class="section-eyebrow">Funktioner</div>
+      <h2 class="section-title">Allt ni behöver. <em>Inget</em> ni inte behöver.</h2>
+      <p class="section-lead">
+        Ordo är byggt kring hur svenska familjer faktiskt tänker på pengar —
+        inte hur banker vill att ni ska tänka.
+      </p>
+    </div>
+
+    <div class="features-grid">
+      <article class="feature-cell">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="5" width="18" height="16" rx="2"></rect><path d="M3 9h18M8 3v4M16 3v4"></path></svg>
+        </div>
+        <div class="eyebrow">01 · Månadsbudget</div>
+        <h3>Löner, utgifter och sparkvot — per person.</h3>
+        <p>Registrera inkomster och utgifter per familjemedlem. Dela kostnader med en slider och se sparkvoten månad för månad.</p>
+        <div class="detail">SPARKVOT · 12 MÅN · 19 %</div>
+      </article>
+
+      <article class="feature-cell">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18M5 21V10l7-5 7 5v11"></path><path d="M9 21v-7h6v7"></path></svg>
+        </div>
+        <div class="eyebrow">02 · Lån &amp; räntor</div>
+        <h3>Alla bolån på ett ställe. Live-data från Riksbanken.</h3>
+        <p>Ränte­scenarie­kalkylator som visar exakt vad en höjning eller sänkning gör för er månads­kostnad och totala räntor.</p>
+        <div class="detail"><span class="dot-live"></span> STYRRÄNTA 2,75 % · LIVE</div>
+      </article>
+
+      <article class="feature-cell">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M3 6h18M3 12h18M3 18h18"></path><circle cx="7" cy="6" r="1.5" fill="currentColor"></circle><circle cx="15" cy="12" r="1.5" fill="currentColor"></circle><circle cx="10" cy="18" r="1.5" fill="currentColor"></circle></svg>
+        </div>
+        <div class="eyebrow">03 · Balansräkning</div>
+        <h3>Nettovärde, tillgångar och skuldgrad.</h3>
+        <p>Hela hushållets balans­räkning, alltid uppdaterad. Tillgångs­fördelning, belåningsgrad och nettovärde över tid.</p>
+        <div class="detail">NETTOVÄRDE · 1 842 700 KR</div>
+      </article>
+
+      <article class="feature-cell">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><circle cx="12" cy="12" r="5"></circle><circle cx="12" cy="12" r="1.5" fill="currentColor"></circle></svg>
+        </div>
+        <div class="eyebrow">04 · Sparmål</div>
+        <h3>Kontantinsats, bil, pension — med prognos.</h3>
+        <p>Sätt upp mål och få en realistisk prognos. Fond­rekommendationer som anpassas efter er tidshorisont och risk­tolerans.</p>
+        <div class="detail">3 AKTIVA MÅL · NÄSTA 2027-Q1</div>
+      </article>
+
+      <article class="feature-cell">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="9" cy="8" r="3"></circle><circle cx="17" cy="10" r="2.5"></circle><path d="M3 20c0-3 3-5 6-5s6 2 6 5"></path><path d="M15 20c0-2 2-4 4-4s2 1 2 3"></path></svg>
+        </div>
+        <div class="eyebrow">05 · Familjevy</div>
+        <h3>Flera medlemmar. Gemensamma och egna konton.</h3>
+        <p>Båda i hushållet jamställda i appen, med varsin färg. Barn och vuxna hanteras separat. Gemensamma mål som båda kan justera.</p>
+        <div class="detail">2 VUXNA · 2 BARN · GEMENSAMT</div>
+      </article>
+
+      <article class="feature-cell ai">
+        <div class="icon">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3 14 9l6 2-6 2-2 6-2-6-6-2 6-2z"></path></svg>
+        </div>
+        <div class="eyebrow">06 · AI-analys</div>
+        <h3>Personliga råd — baserade på era siffror.</h3>
+        <p>Låt AI gå igenom ekonomin och ge konkreta råd. Sparkvot, ränte­känslighet, optimerings­möjligheter. Inte generiska tips.</p>
+        <div class="detail">DRIVS AV CLAUDE · 12 MÅN DATA</div>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FEATURE DEEP DIVES (3)
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="demo" data-screen-label="Feature deep dive">
+  <div class="wrap">
+
+    <!-- Feature 1 — Family dashboard -->
+    <article class="feature">
+      <div class="feature-copy">
+        <div class="section-eyebrow">Dashboarden</div>
+        <h3>Hela familjens ekonomi i en bild.</h3>
+        <p>Alla konton, båda personerna och hushållet — på en sida. Ingen flikkarusell, ingen kontotyps-jakt. Bara siffrorna, väl satta.</p>
+        <ul class="feature-list">
+          <li><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span><b>Två separata profiler</b>, en gemensam — utan att de blandas ihop.</span></li>
+          <li><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span><b>Tabulära siffror</b> som linjerar mellan rader. Inga decimal-darrningar.</span></li>
+          <li><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span>Klicka in på vilken siffra som helst — varje belopp är <b>en länk till sin källa</b>.</span></li>
+        </ul>
+      </div>
+
+      <div class="feature-mock mock">
+        <div class="mock-chrome">
+          <div class="mock-dots"><span class="mock-dot r"></span><span class="mock-dot y"></span><span class="mock-dot g"></span></div>
+          <div class="mock-url">ordo.se/dashboard</div>
+        </div>
+        <div class="mock-body" style="padding: 24px 28px;">
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; gap: 16px;">
+            <div style="min-width: 0; flex: 1;">
+              <div class="mock-section-eyebrow">Översikt · April 2026</div>
+              <div class="mock-h" style="font-size:30px;">Hushållet Bergström</div>
+            </div>
+            <div style="display:flex; gap:6px;">
+              <span style="font-family: var(--font-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; padding:5px 10px; border:1px solid var(--border); border-radius: 999px; color:var(--fg-tertiary); white-space: nowrap;">1 mån</span>
+              <span style="font-family: var(--font-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; padding:5px 10px; border:1px solid var(--border-strong); border-radius: 999px; color:var(--fg-primary); background: var(--bg-surface-2); white-space: nowrap;">12 mån</span>
+              <span style="font-family: var(--font-mono); font-size:10px; letter-spacing:0.08em; text-transform:uppercase; padding:5px 10px; border:1px solid var(--border); border-radius: 999px; color:var(--fg-tertiary); white-space: nowrap;">3 år</span>
+            </div>
+          </div>
+
+          <!-- Stat row -->
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 12px; margin-top: 18px;">
+            <div class="mock-card">
+              <div class="label">Netto in</div>
+              <div class="num" style="color: var(--success);">+ 84 300 <small>kr</small></div>
+              <div class="delta pos mono">+ 4,2 % mot förra året</div>
+            </div>
+            <div class="mock-card">
+              <div class="label">Buffert</div>
+              <div class="num">128 900 <small>kr</small></div>
+              <div class="delta mono muted">≈ 3,2 månads­utgifter</div>
+            </div>
+            <div class="mock-card">
+              <div class="label">Bolån</div>
+              <div class="num">2 184 000 <small>kr</small></div>
+              <div class="delta neg mono">− 18 200 kr i år</div>
+            </div>
+          </div>
+
+          <!-- Member rows -->
+          <div style="margin-top:18px; background: var(--bg-surface); border:1px solid var(--border); border-radius: var(--radius-lg); overflow:hidden;">
+            <div style="display:grid; grid-template-columns: 28px 1fr 100px 100px 100px; gap: 12px; padding: 10px 14px; background: var(--bg-surface-2); border-bottom: 1px solid var(--border-subtle); font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.10em; text-transform: uppercase; color: var(--fg-tertiary);">
+              <div></div><div>Profil</div><div style="text-align:right;">Lön</div><div style="text-align:right;">Utgifter</div><div style="text-align:right;">Sparat</div>
+            </div>
+            <div style="display:grid; grid-template-columns: 28px 1fr 100px 100px 100px; gap:12px; padding: 12px 14px; align-items:center;">
+              <div class="avatar m1">E</div>
+              <div><div style="font-weight:500;">Erik</div><div style="font-size:11px; color:var(--fg-tertiary);">Projektledare · 38 år</div></div>
+              <div class="mono" style="text-align:right;">48 200</div>
+              <div class="mono" style="text-align:right; color: var(--danger);">− 26 100</div>
+              <div class="mono" style="text-align:right; color: var(--success);">+ 22 100</div>
+            </div>
+            <div style="display:grid; grid-template-columns: 28px 1fr 100px 100px 100px; gap:12px; padding: 12px 14px; align-items:center; border-top: 1px solid var(--border-subtle);">
+              <div class="avatar m2">S</div>
+              <div><div style="font-weight:500;">Sofie</div><div style="font-size:11px; color:var(--fg-tertiary);">Distriktssköterska · 36 år</div></div>
+              <div class="mono" style="text-align:right;">36 100</div>
+              <div class="mono" style="text-align:right; color: var(--danger);">− 22 800</div>
+              <div class="mono" style="text-align:right; color: var(--success);">+ 13 300</div>
+            </div>
+            <div style="display:grid; grid-template-columns: 28px 1fr 100px 100px 100px; gap:12px; padding: 12px 14px; align-items:center; border-top: 1px solid var(--border-subtle); background: var(--bg-surface-2);">
+              <div class="avatar" style="background: var(--fg-secondary);">G</div>
+              <div><div style="font-weight:500;">Gemensamt</div><div style="font-size:11px; color:var(--fg-tertiary);">Bolån · Hushållskonto · Buffert</div></div>
+              <div class="mono" style="text-align:right;">—</div>
+              <div class="mono" style="text-align:right; color: var(--danger);">− 19 100</div>
+              <div class="mono" style="text-align:right;">+ 0</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Feature 2 — Lån &amp; räntor -->
+    <article class="feature reverse" id="lan">
+      <div class="feature-copy">
+        <div class="section-eyebrow">Lån &amp; räntor</div>
+        <h3>Bolånen — med Riksbankens senaste siffra.</h3>
+        <p>Alla era bolån på ett ställe, med en ränte­scenarie-kalkylator som visar exakt vad en höjning eller sänkning gör för er månadskostnad och era totala räntor.</p>
+        <ul class="feature-list">
+          <li><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span><b>Live-data från Riksbanken</b> — styrränta och listräntor uppdateras automatiskt.</span></li>
+          <li><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span><b>Räntekänslighets­analys</b> — vad kostar ±1 procent­enhet för er, idag?</span></li>
+          <li><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span><b>3-dagars varsel</b> innan en bindning löper ut — så ni hinner förhandla.</span></li>
+        </ul>
+      </div>
+
+      <div class="feature-mock mock">
+        <div class="mock-chrome">
+          <div class="mock-dots"><span class="mock-dot r"></span><span class="mock-dot y"></span><span class="mock-dot g"></span></div>
+          <div class="mock-url">ordo.se/lån</div>
+        </div>
+        <div class="mock-body" style="padding: 24px 28px;">
+          <div style="display:flex; align-items:flex-end; justify-content:space-between; gap: 16px;">
+            <div style="min-width: 0; flex: 1;">
+              <div class="mock-section-eyebrow">Räntekänslighet · Bolån 2 184 000 KR</div>
+              <div class="mock-h" style="font-size:26px;">Vad händer om styrräntan …</div>
+            </div>
+            <div style="display:inline-flex; align-items:center; gap:8px; padding: 5px 10px; background: var(--bg-surface-2); border-radius: 999px; border: 1px solid var(--border);">
+              <span style="width:7px; height:7px; border-radius:50%; background: var(--success); box-shadow: 0 0 0 3px color-mix(in oklch, var(--success) 18%, transparent);"></span>
+              <span style="font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.08em; text-transform: uppercase; color: var(--fg-secondary);">RIKSBANKEN · LIVE</span>
+            </div>
+          </div>
+
+          <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-top: 16px;">
+            <div class="mock-card" style="padding: 14px;">
+              <div class="label">Styrränta nu</div>
+              <div class="num" style="font-size: 22px; margin-top: 4px;">2,75 <small>%</small></div>
+            </div>
+            <div class="mock-card" style="padding: 14px;">
+              <div class="label">Er snittränta</div>
+              <div class="num" style="font-size: 22px; margin-top: 4px;">3,85 <small>%</small></div>
+            </div>
+            <div class="mock-card" style="padding: 14px; border-color: color-mix(in oklch, var(--warning) 35%, var(--border));">
+              <div class="label" style="color: var(--warning);">Bindning löper ut</div>
+              <div class="num" style="font-size: 22px; margin-top: 4px;">2026-04-28</div>
+            </div>
+          </div>
+
+          <!-- Scenario slider mock -->
+          <div style="margin-top: 18px; padding: 16px; background: var(--bg-surface-2); border-radius: var(--radius-md); border: 1px solid var(--border-subtle);">
+            <div style="display:flex; justify-content:space-between; align-items:center;">
+              <span class="mono" style="font-size:10px; letter-spacing:0.10em; text-transform:uppercase; color:var(--fg-tertiary);">Scenario · Räntan höjs</span>
+              <span style="font-family: var(--font-display); font-size: 22px; color: var(--fg-primary);">+ 1,0 <span class="mono" style="font-size:13px; color:var(--fg-tertiary);">pp</span></span>
+            </div>
+            <div style="position:relative; height: 6px; background: var(--bg-canvas); border-radius: 3px; margin-top: 10px;">
+              <div style="position:absolute; left: 0; top:0; width:62%; height:100%; background: linear-gradient(90deg, var(--success), var(--warning)); border-radius: 3px;"></div>
+              <div style="position:absolute; left:62%; top:-5px; width:16px; height:16px; border-radius:50%; background: var(--bg-surface); border: 2px solid var(--warning); box-shadow: var(--shadow-sm); transform: translateX(-50%);"></div>
+            </div>
+            <div style="display:flex; justify-content:space-between; margin-top:8px; font-family: var(--font-mono); font-size:10px; color:var(--fg-muted);">
+              <span>−2 PP</span><span>−1</span><span>0</span><span>+1</span><span>+2 PP</span>
+            </div>
+          </div>
+
+          <!-- Impact row -->
+          <div style="display:grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-top: 14px;">
+            <div class="mock-card" style="padding: 14px;">
+              <div class="label">Månadskostnad ×</div>
+              <div class="num" style="font-size: 22px; color: var(--danger); margin-top: 4px;">+ 2 460 <small>kr/mån</small></div>
+              <div class="delta mono muted">FRÅN 9 380 → 11 840 KR</div>
+            </div>
+            <div class="mock-card" style="padding: 14px;">
+              <div class="label">Total räntekostnad ×</div>
+              <div class="num" style="font-size: 22px; color: var(--danger); margin-top: 4px;">+ 88 600 <small>kr/år</small></div>
+              <div class="delta mono muted">VID 2,84 → 3,84 %</div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+    <!-- Feature 3 — Notiser (phone mock) -->
+    <article class="feature" id="notiser">
+      <div class="feature-copy">
+        <div class="section-eyebrow">Alltid med dig</div>
+        <h3>Hela ekonomin i fickan — med smarta notiser.</h3>
+        <p>Ordo skickar push-notiser när det händer något du bör känna till. Ingen anledning att logga in varje dag — Ordo hör av sig när det är dags.</p>
+        <ul class="notif-list" style="margin-top: var(--space-6);">
+          <li>
+            <span class="stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"></circle><path d="M12 7v5l3 2"></path></svg></span>
+            <span class="copy"><b>Påminnelse att lägga in lönen</b> — automatiskt dag 21–28 varje månad.</span>
+            <span class="when">21 MAJ</span>
+          </li>
+          <li>
+            <span class="stamp" style="color: var(--success);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span>
+            <span class="copy"><b>Bekräftelse när bådas löner är inlagda</b> och månaden är klar.</span>
+            <span class="when">24 MAJ</span>
+          </li>
+          <li>
+            <span class="stamp" style="color: var(--warning);"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v10M12 16v.01M4.93 4.93l14.14 14.14"></path></svg></span>
+            <span class="copy"><b>Påminnelse om obestyrkta överföringar</b> mellan familjemedlemmar.</span>
+            <span class="when">LÖPANDE</span>
+          </li>
+          <li style="border-bottom: 0;">
+            <span class="stamp"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 8v4l3 2"></path><circle cx="12" cy="12" r="9"></circle><path d="M5 3l-2 2M19 3l2 2"></path></svg></span>
+            <span class="copy"><b>Egna schemalagda notiser</b> — valfritt innehåll och tidpunkt.</span>
+            <span class="when">VALFRITT</span>
+          </li>
+        </ul>
+      </div>
+
+      <div style="display:flex; justify-content:center;">
+        <!-- iPhone-style lock screen mockup -->
+        <div class="phone" aria-hidden="true">
+          <div class="phone-screen">
+            <div class="phone-notch"></div>
+
+            <div class="phone-status">
+              <span class="mono">09:41</span>
+              <span class="icons">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M2 12c4 0 4-4 8-4s4 4 8 4M5 16c2 0 2-2 4-2s2 2 4 2M9 19c1 0 1-1 2-1s1 1 2 1"></path></svg>
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="7" width="16" height="10" rx="2"></rect><path d="M21 11v2" stroke-linecap="round"></path><rect x="5" y="9" width="11" height="6" fill="currentColor" stroke="none"></rect></svg>
+              </span>
+            </div>
+
+            <div class="phone-lock-time">
+              <div class="phone-lock-date">Lördag 24 maj</div>
+              <div class="phone-lock-clock">09:41</div>
+            </div>
+
+            <div class="phone-notifs">
+              <div class="phone-notif">
+                <div class="app-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="14" width="3" height="5" rx="1" opacity="0.5"/><rect x="9" y="11" width="3" height="8" rx="1" opacity="0.7"/><rect x="14" y="7" width="3" height="12" rx="1" opacity="0.85"/><rect x="19" y="4" width="3" height="15" rx="1" fill="#FFD9A0"/></svg>
+                </div>
+                <div class="title"><span>Månadens beräkning klar</span></div>
+                <div class="time">nu</div>
+                <div class="body">Bådas löner för maj 2026 är inlagda. Sparkvot 19 %, +400 kr vs april.</div>
+              </div>
+              <div class="phone-notif">
+                <div class="app-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="14" width="3" height="5" rx="1" opacity="0.5"/><rect x="9" y="11" width="3" height="8" rx="1" opacity="0.7"/><rect x="14" y="7" width="3" height="12" rx="1" opacity="0.85"/><rect x="19" y="4" width="3" height="15" rx="1" fill="#FFD9A0"/></svg>
+                </div>
+                <div class="title"><span>Kom ihåg att föra över</span></div>
+                <div class="time">igår</div>
+                <div class="body">Du har inte bekräftat din överföring för april än. Beloppet: 4 200 kr.</div>
+              </div>
+              <div class="phone-notif">
+                <div class="app-icon">
+                  <svg viewBox="0 0 24 24" fill="currentColor"><rect x="4" y="14" width="3" height="5" rx="1" opacity="0.5"/><rect x="9" y="11" width="3" height="8" rx="1" opacity="0.7"/><rect x="14" y="7" width="3" height="12" rx="1" opacity="0.85"/><rect x="19" y="4" width="3" height="15" rx="1" fill="#FFD9A0"/></svg>
+                </div>
+                <div class="title"><span>Lägg in din lön</span></div>
+                <div class="time">21 MAJ</div>
+                <div class="body">Lönen för maj 2026 är inte registrerad än.</div>
+              </div>
+            </div>
+
+            <div class="phone-bottom">
+              <button aria-label="Ficklampa">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><path d="M9 3h6l-1 5h-4z"></path><path d="M10 8h4v5l-2 8-2-8z"></path></svg>
+              </button>
+              <button aria-label="Kamera">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75"><rect x="3" y="6" width="18" height="14" rx="2"></rect><circle cx="12" cy="13" r="4"></circle></svg>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </article>
+
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     AI-ANALYS
+     ════════════════════════════════════════════════════════════ -->
+<section class="section ai-section" id="ai-analys" data-screen-label="AI-analys">
+  <div class="wrap">
+    <div class="ai-grid">
+      <div>
+        <div class="section-eyebrow">AI-analys</div>
+        <h2 class="section-title">Er personliga<br/>ekonomi­rådgivare.</h2>
+        <p class="section-lead">
+          Ordo analyserar er ekonomi och ger konkreta, personliga råd — inte generiska tips från en blogg.
+          Insikter baserade på era faktiska siffror, 12 månader bakåt.
+        </p>
+        <ul class="feature-list" style="margin-top: var(--space-6);">
+          <li><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span>Identifierar om er <b>sparkvot är hållbar</b> på lång sikt.</span></li>
+          <li><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span><b>Räntekänslighets­analys</b> på era bolån — i kronor och öre.</span></li>
+          <li><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span>Konkreta förslag på <b>optimeringar</b> som faktiskt gör skillnad.</span></li>
+          <li><span class="check"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg></span><span>Er data lämnar aldrig Ordo — <b>vi tränar inte modeller</b> på era siffror.</span></li>
+        </ul>
+      </div>
+
+      <div class="ai-mock">
+        <div class="ai-mock-header">
+          <div class="ai-source"><span class="pulse"></span> ORDO · FINANSIELL HÄLSA</div>
+          <div class="mono" style="font-size: 11px; color: var(--fg-tertiary); letter-spacing: 0.06em; white-space: nowrap;">2026-05-22</div>
+        </div>
+
+        <div class="health-row">
+          <div class="health-donut">
+            <svg viewBox="0 0 160 160" aria-hidden="true">
+              <circle class="track" cx="80" cy="80" r="64"></circle>
+              <!-- 74/100 = 74% of 2πr = 74% of 402.12 ≈ 297.6; offset = 402.12 - 297.6 ≈ 104.5 -->
+              <circle class="arc" cx="80" cy="80" r="64"
+                stroke-dasharray="402.12" stroke-dashoffset="104.55"></circle>
+            </svg>
+            <div class="center">
+              <div class="score">74</div>
+              <div class="max">AV 100</div>
+            </div>
+          </div>
+          <div class="health-label" style="flex:1;">
+            <div class="label-text">Hushållets betyg</div>
+            <div class="label-h">Stabilt.</div>
+            <ul class="grade-list">
+              <li><span style="display:inline-flex; align-items:center; gap:8px;"><span class="pip"></span> Sparkvot</span> <span class="num">19 % · OK</span></li>
+              <li><span style="display:inline-flex; align-items:center; gap:8px;"><span class="pip"></span> Buffert</span> <span class="num">3,2 mån · OK</span></li>
+              <li><span style="display:inline-flex; align-items:center; gap:8px;"><span class="pip warn"></span> Amortering</span> <span class="num">1,8 % · KAN ÖKAS</span></li>
+              <li><span style="display:inline-flex; align-items:center; gap:8px;"><span class="pip"></span> Belåningsgrad</span> <span class="num">62 % · OK</span></li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="ai-quote">
+          <div class="role">GENERERAT AV CLAUDE</div>
+          <blockquote>
+            “Er sparkvot på 19 % är stabil. Med era bolån på 3,85 % snittränta skulle en höjning på 1 pp kosta ca 2 460 kr mer per månad — er buffert klarar det med marginal, men amorterings­takten kan med fördel ökas något.”
+          </blockquote>
+          <div class="meta">BASERAT PÅ 12 MÅN · SIFFRORNA LÄMNAR ALDRIG ORDO</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FÖR VEM
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="for-familjer" data-screen-label="För vem">
+  <div class="wrap">
+    <div class="section-header">
+      <div class="section-eyebrow">För vem</div>
+      <h2 class="section-title">Hushåll där <em>två</em> försöker hålla ordning.</h2>
+      <p class="section-lead">
+        Ordo är gjort för det vanligaste — och svåraste — fallet: två vuxna med varsin lön, en gemensam ekonomi, ett bolån och ett par sparmål.
+      </p>
+    </div>
+
+    <div class="who">
+      <article class="who-card">
+        <div class="scenario">Scenario · Bolån</div>
+        <h4>Två fasta inkomster och ett bolån.</h4>
+        <p class="quote">"Vi visste att vi sparade. Vi visste bara inte hur mycket — eller om det räckte. Nu ser vi det varje söndag på två minuter."</p>
+        <p class="by">— Erik &amp; Sofie, Linköping</p>
+      </article>
+
+      <article class="who-card m2">
+        <div class="scenario">Scenario · Föräldraledig</div>
+        <h4>Olika inkomst under en period.</h4>
+        <p class="quote">"Under föräldra­ledigheten gjorde Ordo det självklart vem som betalade vad — utan att vi behövde räkna om varje månad."</p>
+        <p class="by">— Anna &amp; Johan, Göteborg</p>
+      </article>
+
+      <article class="who-card m3">
+        <div class="scenario">Scenario · Sparande</div>
+        <h4>Buffert, pension, fonder.</h4>
+        <p class="quote">"Vi har tre ISK och en KF mellan oss. Att se dem på en sida — med våra färger — är värt mer än vi trodde."</p>
+        <p class="by">— Karin &amp; Mira, Malmö</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     PRINCIPER
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="principer" data-screen-label="Principer">
+  <div class="wrap">
+    <div class="section-header">
+      <div class="section-eyebrow">Principer</div>
+      <h2 class="section-title">Lugnt, seriöst, varmt — i den ordningen.</h2>
+      <p class="section-lead">
+        Vi byggde Ordo med lika delar bank och hem i tanken. Här är de val vi gjort som inte syns vid första anblicken — men som du kommer att märka över tid.
+      </p>
+    </div>
+
+    <div class="principles">
+      <div class="principle">
+        <div class="label">01</div>
+        <h4>Inga konto­kopplingar.</h4>
+        <p>Du knyter inte ditt BankID till Ordo. Ingen tredjepart skrapar dina trans­aktioner. Du skriver in månads­summor — det är allt vi behöver för att rita kurvan.</p>
+      </div>
+      <div class="principle">
+        <div class="label">02</div>
+        <h4>Inga puffnotiser.</h4>
+        <p>Vi väcker inte din telefon för att säga att kaffet var dyrt. Var­ningar visas i appen när du själv öppnar den, och bara för verkligt viktiga datum.</p>
+      </div>
+      <div class="principle">
+        <div class="label">03</div>
+        <h4>Tabulära siffror, alltid.</h4>
+        <p>Varje belopp i Ordo använder mono-siffror som linjerar mellan rader. Ett kvitto­värde får inte hoppa när du scrollar — det är slarvigt och förvirrande.</p>
+      </div>
+      <div class="principle">
+        <div class="label">04</div>
+        <h4>Svensk­svenska i kantlinjerna.</h4>
+        <p>Vi skriver "kr", inte "SEK". Datum som <span class="mono">2026-04-28</span>. Vi använder inte ordet "smart". Vi vill att Ordo känns som en lokal sak — för dig som bor här.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FAQ
+     ════════════════════════════════════════════════════════════ -->
+<section class="section" id="fragor" data-screen-label="FAQ">
+  <div class="wrap-narrow">
+    <div class="section-header" style="margin-bottom: var(--space-8);">
+      <div class="section-eyebrow">Vanliga frågor</div>
+      <h2 class="section-title">Det vi får mest.</h2>
+    </div>
+
+    <div class="faq">
+      <details>
+        <summary>Kostar det något? <span class="plus" aria-hidden="true"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></summary>
+        <p>Under stängda betan är Ordo gratis. När vi går vidare till öppen lansering planerar vi en familje­licens i nivå med en strömnings­tjänst — runt 49 kr/mån för hela hushållet, utan annonser och utan datadelning.</p>
+      </details>
+
+      <details>
+        <summary>Kopplas Ordo till min bank? <span class="plus"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></summary>
+        <p>Nej, medvetet inte. Vi tror att månads­data är det vi behöver för att rita en användbar bild — inte varenda transaktion. Du skriver in lön, lån och sparande själv, eller importerar via en CSV om du redan har data.</p>
+      </details>
+
+      <details>
+        <summary>Funkar Ordo för en person ensam? <span class="plus"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></summary>
+        <p>Ja, men vi har valt att designa för två i hushållet. En del jämför­elser och färgkodningar blir mer meningsfulla när du har en partner i appen. Vi planerar en "Ordo Solo"-läge under hösten 2026.</p>
+      </details>
+
+      <details>
+        <summary>Var hostas mina data? <span class="plus"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></summary>
+        <p>I Stockholm. Krypterat i vila och i transport. Vi säljer aldrig data till tredje part och vi visar inte annonser. Det är inte affärsmodellen.</p>
+      </details>
+
+      <details>
+        <summary>Vad menar ni med "tabulära siffror"? <span class="plus"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></summary>
+        <p>Att <span class="mono">1</span> är lika brett som <span class="mono">8</span>. Det låter litet, men det är skillnaden mellan att kunna scanna en kolumn med siffror på en sekund — och att behöva läsa varje rad. Ordo använder Geist Mono med <span class="mono">tabular-nums</span> på alla belopp.</p>
+      </details>
+
+      <details>
+        <summary>När kan jag prova? <span class="plus"><svg viewBox="0 0 24 24" width="14" height="14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M12 5v14M5 12h14"></path></svg></span></summary>
+        <p>Vi släpper ungefär 80 inbjudningar i veckan, baserat på var i listan du står och om någon i ditt hushåll redan har testat. Snittet just nu är 2–3 veckor från anmälan.</p>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ════════════════════════════════════════════════════════════
+     FINAL CTA — Email signup (waitlist)
+     ════════════════════════════════════════════════════════════ -->
+<section id="cta" data-screen-label="CTA" style="padding-bottom: var(--space-16);">
+  <div class="wrap">
+    <div class="cta-band">
+      <div>
+        <div class="section-eyebrow" style="color: var(--fg-tertiary);">Tidig tillgång</div>
+        <h2>
+          Ordo lanserar<br/>
+          <em>snart.</em>
+        </h2>
+        <p style="color: var(--fg-secondary); margin-top: var(--space-5); max-width: 44ch; position: relative; z-index: 1;">
+          Lägg din e-postadress här så hör vi av oss när du kan börja använda Ordo. Inbjudningar går ut i vågor under hösten 2026.
+        </p>
+      </div>
+      <div class="cta-band-side">
+        <form class="hero-form" id="ctaForm" style="max-width: none;" onsubmit="return submitWaitlist(event, 'cta')">
+          <label class="sr-only" for="ctaEmail">E-postadress</label>
+          <input id="ctaEmail" type="email" required placeholder="din@email.se" autocomplete="email"/>
+          <button class="btn btn-primary" type="submit">Anmäl intresse
+            <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14M13 5l7 7-7 7"></path></svg>
+          </button>
+        </form>
+        <p class="mono" style="margin-top: var(--space-4); font-size: 11px; color: var(--fg-muted); letter-spacing: 0.08em;">INGEN SPAM · INGEN PRENUMERATION · BARA ETT MEDDELANDE NÄR ORDO ÄR REDO.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<!-- ════════════════════════════════════════════════════════════
+     FOOTER
+     ════════════════════════════════════════════════════════════ -->
+<footer class="footer" data-screen-label="Footer">
+  <div class="wrap">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="#top" class="brand">
+          <svg class="brand-mark" viewBox="0 0 64 64" fill="none" aria-hidden="true">
+            <rect x="10"   y="38" width="6.5" height="12" rx="3.25" fill="currentColor" opacity="0.45"></rect>
+            <rect x="19.5" y="32" width="6.5" height="18" rx="3.25" fill="currentColor" opacity="0.60"></rect>
+            <rect x="29"   y="25" width="6.5" height="25" rx="3.25" fill="currentColor" opacity="0.78"></rect>
+            <rect x="38.5" y="18" width="6.5" height="32" rx="3.25" fill="currentColor"></rect>
+            <rect x="48"   y="13" width="6.5" height="37" rx="3.25" fill="var(--logo-accent)"></rect>
+          </svg>
+          <span class="brand-text">Ordo</span>
+        </a>
+        <p>Ett lugnt system för familjens ekonomi. Byggt i Stockholm, för svenska hushåll.</p>
+      </div>
+
+      <div class="footer-col">
+        <h5>Produkt</h5>
+        <ul>
+          <li><a href="#funktioner">Funktioner</a></li>
+          <li><a href="#demo">Demo</a></li>
+          <li><a href="#fragor">Vanliga frågor</a></li>
+          <li><a href="#cta">Inbjudan</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Företag</h5>
+        <ul>
+          <li><a href="#">Om oss</a></li>
+          <li><a href="#">Manifest</a></li>
+          <li><a href="#">Press &amp; loggor</a></li>
+          <li><a href="#">Kontakt</a></li>
+        </ul>
+      </div>
+
+      <div class="footer-col">
+        <h5>Juridiskt</h5>
+        <ul>
+          <li><a href="#">Integritets­policy</a></li>
+          <li><a href="#">Cookies</a></li>
+          <li><a href="#">Användarvillkor</a></li>
+          <li><a href="#">GDPR</a></li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="footer-bottom">
+      <span>ORDO AB · ORG.NR 559123-4567 · STOCKHOLM</span>
+      <span>© 2026 ORDO</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  /* Theme toggle — persists to localStorage 'ordo-theme'. */
+  (function() {
+    var key = 'ordo-theme';
+    var saved = localStorage.getItem(key);
+    if (saved === 'dark' || saved === 'light') {
+      document.documentElement.setAttribute('data-theme', saved);
+    }
+    var btn = document.getElementById('themeToggle');
+    if (!btn) return;
+    btn.addEventListener('click', function() {
+      var current = document.documentElement.getAttribute('data-theme');
+      var next = current === 'dark' ? 'light' : 'dark';
+      document.documentElement.setAttribute('data-theme', next);
+      localStorage.setItem(key, next);
+    });
+  })();
+
+  /* Waitlist form handler — stub for the landing page.
+     Hook this up in the dev handoff: POST to /api/waitlist with { email, source }. */
+  function submitWaitlist(event, source) {
+    event.preventDefault();
+    var form = event.currentTarget;
+    var input = form.querySelector('input[type=email]');
+    var button = form.querySelector('button');
+    if (!input || !input.value) return false;
+    /* Optimistic UI */
+    form.classList.add('success');
+    button.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Klart';
+    button.disabled = true;
+    input.disabled = true;
+    /* TODO (Claude Code): POST { email: input.value, source: source } to /api/waitlist */
+    return false;
+  }
+</script>
+
+</body>
+</html>
