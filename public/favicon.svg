@@ -1,8 +1,27 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
-  <rect width="64" height="64" rx="14" fill="#6366f1"/>
-  <rect x="9.75"  y="44" width="6.5" height="12" rx="3.25" fill="white" opacity="0.45"/>
-  <rect x="19.25" y="38" width="6.5" height="18" rx="3.25" fill="white" opacity="0.60"/>
-  <rect x="28.75" y="31" width="6.5" height="25" rx="3.25" fill="white" opacity="0.78"/>
-  <rect x="38.25" y="24" width="6.5" height="32" rx="3.25" fill="white" opacity="0.92"/>
-  <rect x="47.75" y="19" width="6.5" height="37" rx="3.25" fill="white"/>
+  <!-- Bakgrund: marinblå squircle-approximation -->
+  <rect width="64" height="64" rx="14" fill="url(#bg)"/>
+  <!-- Highlight -->
+  <rect width="64" height="28" rx="14" fill="url(#hi)" opacity="0.28"/>
+  <!-- Fem stigande staplar -->
+  <rect x="9.75"  y="44" width="6.5" height="12" rx="3.25" fill="white" opacity="0.55"/>
+  <rect x="19.25" y="38" width="6.5" height="18" rx="3.25" fill="white" opacity="0.72"/>
+  <rect x="28.75" y="31" width="6.5" height="25" rx="3.25" fill="white" opacity="0.88"/>
+  <rect x="38.25" y="24" width="6.5" height="32" rx="3.25" fill="white"/>
+  <rect x="47.75" y="19" width="6.5" height="37" rx="3.25" fill="url(#acc)"/>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#6E8AE8"/>
+      <stop offset="50%"  stop-color="#3D5BC7"/>
+      <stop offset="100%" stop-color="#1F2F8C"/>
+    </linearGradient>
+    <linearGradient id="hi" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="white" stop-opacity="1"/>
+      <stop offset="100%" stop-color="white" stop-opacity="0"/>
+    </linearGradient>
+    <linearGradient id="acc" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%"   stop-color="#FFD9A0"/>
+      <stop offset="100%" stop-color="#E89A4D"/>
+    </linearGradient>
+  </defs>
 </svg>
