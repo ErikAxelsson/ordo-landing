@@ -1,0 +1,339 @@
+---
+const features = [
+  {
+    icon: `<rect x="3" y="3" width="18" height="18" rx="2"/><path d="M3 9h18M9 21V9"/>`,
+    title: "Månadsbudget",
+    desc: "Registrera inkomster och utgifter per person. Dela kostnader med slider, följ sparkvoten månad för månad.",
+  },
+  {
+    icon: `<path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>`,
+    title: "Lån & räntor",
+    desc: "Samla alla bolån på ett ställe. Räntescenariokalkylator med live-data från Riksbanken.",
+  },
+  {
+    icon: `<path d="M22 12h-4l-3 9L9 3l-3 9H2"/>`,
+    title: "Balansräkning",
+    desc: "Nettovärde, tillgångsfördelning och skuldsättning — alltid uppdaterat, alltid rätt.",
+  },
+  {
+    icon: `<path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>`,
+    title: "Sparmål",
+    desc: "Sätt upp mål — kontantinsats, bil, pension. Få prognoser och fondrekommendationer anpassade till din tidshorisont.",
+  },
+  {
+    icon: `<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>`,
+    title: "Familjevy",
+    desc: "Flera familjemedlemmar, gemensamma och individuella konton. Barn och vuxna hanteras separat.",
+  },
+  {
+    icon: `<circle cx="12" cy="12" r="3"/><path d="M12 1v4M12 19v4M4.22 4.22l2.83 2.83M16.95 16.95l2.83 2.83M1 12h4M19 12h4M4.22 19.78l2.83-2.83M16.95 7.05l2.83-2.83"/>`,
+    title: "AI-analys",
+    desc: "Låt AI gå igenom er ekonomi och ge konkreta råd — sparkvot, räntekänslighet, optimeringsmöjligheter.",
+  },
+];
+---
+
+<!doctype html>
+<html lang="sv">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ordo — Ordning på familjens ekonomi</title>
+    <meta name="description" content="Ordo samlar familjens hela ekonomi på ett ställe. Budget, sparande, lån, balansräkning och AI-analys — byggt för svenska familjer." />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&display=swap" rel="stylesheet" />
+  </head>
+  <body>
+
+    <!-- NAV -->
+    <nav>
+      <div class="container nav-inner">
+        <a href="/" class="logo">Ordo</a>
+        <a href="https://homeplanning-staging.up.railway.app" class="btn-outline" target="_blank">Logga in</a>
+      </div>
+    </nav>
+
+    <!-- HERO -->
+    <section class="hero">
+      <div class="container hero-inner">
+        <div class="hero-badge">Byggt för svenska familjer</div>
+        <h1>Ordning på<br /><em>familjens ekonomi</em></h1>
+        <p class="hero-sub">
+          Ordo samlar budget, sparande, lån och tillgångar på ett ställe.
+          Så att ni alltid vet var ni står — och vart ni är på väg.
+        </p>
+        <div class="hero-cta">
+          <a href="#waitlist" class="btn-primary">Kom med på väntelistan</a>
+          <a href="#features" class="btn-ghost">Se vad Ordo kan →</a>
+        </div>
+
+        <!-- App mockup -->
+        <div class="mockup">
+          <div class="mockup-bar">
+            <span></span><span></span><span></span>
+          </div>
+          <div class="mockup-content">
+            <div class="mockup-stat-row">
+              <div class="mockup-stat">
+                <div class="mockup-label">FAMILJENS SPARANDE</div>
+                <div class="mockup-value">326 601 kr</div>
+              </div>
+              <div class="mockup-stat">
+                <div class="mockup-label">NETTOVÄRDE</div>
+                <div class="mockup-value">6,3 mkr</div>
+              </div>
+              <div class="mockup-stat">
+                <div class="mockup-label">SPARKVOT</div>
+                <div class="mockup-value positive">7 %</div>
+              </div>
+            </div>
+            <div class="mockup-chart">
+              <svg viewBox="0 0 400 80" preserveAspectRatio="none">
+                <defs>
+                  <linearGradient id="g1" x1="0" y1="0" x2="0" y2="1">
+                    <stop offset="0%" stop-color="#6366f1" stop-opacity="0.3"/>
+                    <stop offset="100%" stop-color="#6366f1" stop-opacity="0"/>
+                  </linearGradient>
+                </defs>
+                <path d="M0,60 C40,55 80,45 120,40 C160,35 200,30 240,25 C280,20 320,18 360,15 L400,12 L400,80 L0,80 Z" fill="url(#g1)"/>
+                <path d="M0,60 C40,55 80,45 120,40 C160,35 200,30 240,25 C280,20 320,18 360,15 L400,12" fill="none" stroke="#6366f1" stroke-width="2"/>
+                <circle cx="400" cy="12" r="4" fill="#6366f1"/>
+              </svg>
+            </div>
+            <div class="mockup-months">
+              {["Jun", "Aug", "Okt", "Dec", "Feb", "Apr"].map(m => <span>{m}</span>)}
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PROBLEM -->
+    <section class="problem">
+      <div class="container problem-inner">
+        <p class="problem-text">
+          De flesta familjer hanterar ekonomin i spridda Exceldokument, separata bankapper och huvudet.
+          Det funkar — tills det inte funkar.
+        </p>
+      </div>
+    </section>
+
+    <!-- FEATURES -->
+    <section class="features" id="features">
+      <div class="container">
+        <div class="section-header">
+          <div class="section-tag">Funktioner</div>
+          <h2>Allt ni behöver.<br />Inget ni inte behöver.</h2>
+          <p class="section-sub">Ordo är byggt kring hur svenska familjer faktiskt tänker på pengar — inte hur banker vill att ni ska tänka.</p>
+        </div>
+        <div class="features-grid">
+          {features.map(f => (
+            <div class="feature-card">
+              <div class="feature-icon">
+                <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" set:html={f.icon} />
+              </div>
+              <h3>{f.title}</h3>
+              <p>{f.desc}</p>
+            </div>
+          ))}
+        </div>
+      </div>
+    </section>
+
+    <!-- AI SECTION -->
+    <section class="ai-section">
+      <div class="container ai-inner">
+        <div class="ai-text">
+          <div class="section-tag">AI-analys</div>
+          <h2>Din personliga ekonomirådgivare — alltid tillgänglig</h2>
+          <p>
+            Ordo analyserar er ekonomi och ger konkreta, personliga råd. Inte generiska tips från en blogg — utan insikter baserade på era faktiska siffror.
+          </p>
+          <ul class="ai-list">
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Identifierar om er sparkvot är hållbar
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Räntekänslighetsanalys på era bolån
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Konkreta förslag på optimeringar
+            </li>
+            <li>
+              <svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+              Cachat — snabbt svar, inga onödiga API-anrop
+            </li>
+          </ul>
+        </div>
+        <div class="ai-card">
+          <div class="ai-card-header">
+            <div class="ai-score">
+              <span class="ai-score-num">74</span>
+              <span class="ai-score-label">/ 100</span>
+            </div>
+            <span class="ai-score-tag">Finansiell hälsa</span>
+          </div>
+          <div class="ai-card-body">
+            <p>"Er sparkvot på 7 % är stabil men lämnar lite marginal. Med era nuvarande bolåneräntor och en eventuell räntehöjning på 1 pp ökar månadskostnaden med ca 3 200 kr — det är värt att bygga en större buffert."</p>
+          </div>
+          <div class="ai-card-footer">
+            <span>Genererad av Claude · Baserad på 12 månader</span>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WAITLIST -->
+    <section class="waitlist" id="waitlist">
+      <div class="container waitlist-inner">
+        <div class="section-tag light">Tidig tillgång</div>
+        <h2>Ordo lanserar snart.</h2>
+        <p>Lägg din e-postadress här så hör vi av oss när du kan börja använda Ordo.</p>
+        <form class="waitlist-form" action="https://formspree.io/f/placeholder" method="POST">
+          <input type="email" name="email" placeholder="din@email.se" required />
+          <button type="submit">Anmäl intresse</button>
+        </form>
+        <p class="waitlist-note">Ingen spam. Ingen prenumeration. Bara ett meddelande när Ordo är redo.</p>
+      </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer>
+      <div class="container footer-inner">
+        <span class="logo">Ordo</span>
+        <span class="footer-copy">© 2025 Ordo. Byggt i Sverige.</span>
+      </div>
+    </footer>
+
+  </body>
+</html>
+
+<style is:global>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --brand: #6366f1;
+    --brand-dark: #4f46e5;
+    --fg: #0f172a;
+    --fg-2: #334155;
+    --fg-3: #64748b;
+    --fg-4: #94a3b8;
+    --bg: #ffffff;
+    --bg-2: #f8fafc;
+    --bg-3: #f1f5f9;
+    --border: #e2e8f0;
+    --success: #10b981;
+    --radius: 14px;
+  }
+
+  html { scroll-behavior: smooth; }
+  body { font-family: 'Inter', system-ui, sans-serif; color: var(--fg); background: var(--bg); line-height: 1.6; -webkit-font-smoothing: antialiased; }
+  em { font-family: 'Instrument Serif', Georgia, serif; font-style: italic; }
+  .container { max-width: 1100px; margin: 0 auto; padding: 0 24px; }
+
+  /* NAV */
+  nav { position: sticky; top: 0; z-index: 100; border-bottom: 1px solid var(--border); background: rgba(255,255,255,0.88); backdrop-filter: blur(12px); }
+  .nav-inner { display: flex; align-items: center; justify-content: space-between; height: 60px; }
+  .logo { font-weight: 700; font-size: 20px; letter-spacing: -0.03em; color: var(--fg); text-decoration: none; }
+
+  /* BUTTONS */
+  .btn-primary { display: inline-flex; align-items: center; background: var(--brand); color: #fff; padding: 12px 24px; border-radius: 10px; font-size: 15px; font-weight: 600; text-decoration: none; transition: background 0.15s, transform 0.1s; }
+  .btn-primary:hover { background: var(--brand-dark); transform: translateY(-1px); }
+  .btn-outline { display: inline-flex; align-items: center; border: 1px solid var(--border); color: var(--fg-2); padding: 8px 18px; border-radius: 8px; font-size: 14px; font-weight: 500; text-decoration: none; transition: border-color 0.15s, color 0.15s; }
+  .btn-outline:hover { border-color: var(--brand); color: var(--brand); }
+  .btn-ghost { display: inline-flex; align-items: center; color: var(--fg-3); font-size: 15px; font-weight: 500; text-decoration: none; transition: color 0.15s; }
+  .btn-ghost:hover { color: var(--brand); }
+
+  /* SECTION TAG */
+  .section-tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; color: var(--brand); background: color-mix(in srgb, var(--brand) 10%, transparent); padding: 4px 10px; border-radius: 999px; margin-bottom: 16px; }
+  .section-tag.light { color: #a5b4fc; background: rgba(255,255,255,0.12); }
+
+  /* HERO */
+  .hero { padding: 96px 0 80px; }
+  .hero-inner { display: flex; flex-direction: column; align-items: center; text-align: center; gap: 24px; }
+  .hero-badge { font-size: 12px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; color: var(--fg-3); background: var(--bg-3); border: 1px solid var(--border); padding: 5px 12px; border-radius: 999px; }
+  h1 { font-size: clamp(40px, 6vw, 72px); font-weight: 700; letter-spacing: -0.03em; line-height: 1.1; }
+  h1 em { color: var(--brand); font-size: 1.05em; }
+  .hero-sub { max-width: 520px; font-size: 18px; color: var(--fg-2); line-height: 1.65; }
+  .hero-cta { display: flex; gap: 16px; align-items: center; flex-wrap: wrap; justify-content: center; }
+
+  /* MOCKUP */
+  .mockup { width: 100%; max-width: 720px; margin-top: 16px; border-radius: 16px; overflow: hidden; border: 1px solid var(--border); box-shadow: 0 24px 64px rgba(0,0,0,0.10), 0 4px 16px rgba(0,0,0,0.06); }
+  .mockup-bar { background: #1e293b; padding: 12px 16px; display: flex; gap: 7px; align-items: center; }
+  .mockup-bar span { width: 11px; height: 11px; border-radius: 50%; background: #475569; }
+  .mockup-bar span:nth-child(1) { background: #ef4444; }
+  .mockup-bar span:nth-child(2) { background: #f59e0b; }
+  .mockup-bar span:nth-child(3) { background: #22c55e; }
+  .mockup-content { background: #0f172a; padding: 24px; }
+  .mockup-stat-row { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; margin-bottom: 24px; }
+  .mockup-stat { background: #1e293b; border-radius: 10px; padding: 14px 16px; }
+  .mockup-label { font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: #64748b; margin-bottom: 6px; font-family: monospace; }
+  .mockup-value { font-size: 18px; font-weight: 600; color: #f1f5f9; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; }
+  .mockup-value.positive { color: #10b981; }
+  .mockup-chart { height: 80px; }
+  .mockup-chart svg { width: 100%; height: 100%; }
+  .mockup-months { display: flex; justify-content: space-between; padding-top: 8px; }
+  .mockup-months span { font-size: 10px; color: #475569; font-family: monospace; }
+
+  /* PROBLEM */
+  .problem { padding: 64px 0; border-top: 1px solid var(--border); border-bottom: 1px solid var(--border); background: var(--bg-2); }
+  .problem-inner { text-align: center; }
+  .problem-text { font-size: clamp(18px, 2.5vw, 26px); font-weight: 500; color: var(--fg-2); max-width: 680px; margin: 0 auto; line-height: 1.5; }
+
+  /* FEATURES */
+  .features { padding: 96px 0; }
+  .section-header { text-align: center; margin-bottom: 60px; }
+  .section-header h2 { font-size: clamp(28px, 4vw, 44px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.15; margin-bottom: 16px; }
+  .section-sub { font-size: 17px; color: var(--fg-3); max-width: 480px; margin: 0 auto; }
+  .features-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+  @media (max-width: 768px) { .features-grid { grid-template-columns: 1fr; } }
+  @media (min-width: 769px) and (max-width: 1024px) { .features-grid { grid-template-columns: repeat(2, 1fr); } }
+  .feature-card { padding: 28px; border-radius: var(--radius); border: 1px solid var(--border); background: var(--bg); transition: border-color 0.15s, box-shadow 0.15s, transform 0.15s; }
+  .feature-card:hover { border-color: color-mix(in srgb, var(--brand) 40%, var(--border)); box-shadow: 0 4px 24px rgba(99,102,241,0.08); transform: translateY(-2px); }
+  .feature-icon { width: 44px; height: 44px; border-radius: 10px; background: color-mix(in srgb, var(--brand) 10%, transparent); color: var(--brand); display: flex; align-items: center; justify-content: center; margin-bottom: 16px; }
+  .feature-card h3 { font-size: 16px; font-weight: 600; color: var(--fg); margin-bottom: 8px; }
+  .feature-card p { font-size: 14px; color: var(--fg-3); line-height: 1.6; }
+
+  /* AI SECTION */
+  .ai-section { padding: 96px 0; background: var(--bg-2); }
+  .ai-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 64px; align-items: center; }
+  @media (max-width: 768px) { .ai-inner { grid-template-columns: 1fr; } }
+  .ai-text h2 { font-size: clamp(26px, 3.5vw, 40px); font-weight: 700; letter-spacing: -0.025em; line-height: 1.2; margin-bottom: 16px; }
+  .ai-text p { font-size: 16px; color: var(--fg-2); line-height: 1.7; margin-bottom: 24px; }
+  .ai-list { list-style: none; display: flex; flex-direction: column; gap: 10px; }
+  .ai-list li { display: flex; align-items: center; gap: 10px; font-size: 15px; color: var(--fg-2); }
+  .ai-list svg { color: var(--success); flex-shrink: 0; }
+  .ai-card { border-radius: var(--radius); overflow: hidden; border: 1px solid var(--border); box-shadow: 0 8px 32px rgba(0,0,0,0.08); background: var(--bg); }
+  .ai-card-header { background: #0f172a; padding: 20px 24px; display: flex; align-items: center; gap: 12px; }
+  .ai-score { display: flex; align-items: baseline; gap: 2px; }
+  .ai-score-num { font-size: 36px; font-weight: 700; color: #f1f5f9; letter-spacing: -0.03em; }
+  .ai-score-label { font-size: 16px; color: #64748b; }
+  .ai-score-tag { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: #6366f1; background: rgba(99,102,241,0.15); padding: 4px 10px; border-radius: 999px; }
+  .ai-card-body { padding: 20px 24px; }
+  .ai-card-body p { font-size: 14px; color: var(--fg-2); line-height: 1.7; font-style: italic; }
+  .ai-card-footer { padding: 12px 24px; border-top: 1px solid var(--border); }
+  .ai-card-footer span { font-size: 11px; color: var(--fg-4); }
+
+  /* WAITLIST */
+  .waitlist { padding: 96px 0; background: #0f172a; }
+  .waitlist-inner { text-align: center; }
+  .waitlist h2 { font-size: clamp(28px, 4vw, 48px); font-weight: 700; letter-spacing: -0.025em; color: #f1f5f9; margin-bottom: 16px; }
+  .waitlist p { font-size: 17px; color: #94a3b8; margin-bottom: 32px; }
+  .waitlist-form { display: flex; gap: 10px; max-width: 440px; margin: 0 auto 16px; flex-wrap: wrap; justify-content: center; }
+  .waitlist-form input { flex: 1; min-width: 220px; padding: 13px 18px; border-radius: 10px; border: 1px solid #334155; background: #1e293b; color: #f1f5f9; font-size: 15px; outline: none; transition: border-color 0.15s; }
+  .waitlist-form input:focus { border-color: var(--brand); }
+  .waitlist-form input::placeholder { color: #475569; }
+  .waitlist-form button { padding: 13px 24px; border-radius: 10px; background: var(--brand); color: #fff; border: none; font-size: 15px; font-weight: 600; cursor: pointer; transition: background 0.15s; }
+  .waitlist-form button:hover { background: var(--brand-dark); }
+  .waitlist-note { font-size: 13px; color: #475569; }
+
+  /* FOOTER */
+  footer { padding: 28px 0; border-top: 1px solid #1e293b; background: #0f172a; }
+  .footer-inner { display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 12px; }
+  footer .logo { color: #f1f5f9; }
+  .footer-copy { font-size: 13px; color: #475569; }
+</style>
