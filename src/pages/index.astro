@@ -332,17 +332,78 @@ img,svg{display:block;max-width:100%}
 .footer-col a:hover{color:var(--fg-primary)}
 .footer-bottom{margin-top:var(--space-12);padding-top:var(--space-6);border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--fg-tertiary);letter-spacing:0.04em}
 /* ── RESPONSIVE ─────────────────────────────────────────────────── */
+/* ── RESPONSIVE ─────────────────────────────────────────────────── */
 @media(max-width:880px){.nav-links{display:none}}
 @media(max-width:980px){.nav-actions .btn-ghost{display:none}}
+
+/* Tablet + small desktop */
 @media(max-width:720px){
-  .hero-card-3{display:none}
-  .hero-card-2{right:-10px;bottom:-20px;width:70%}
+  /* Layout */
+  .wrap,.wrap-narrow{padding:0 var(--space-5)}
   .section{padding:var(--space-16) 0}
-  .cta-band{padding:var(--space-12)}
+  .section-tight{padding:var(--space-12) 0}
+  .section-title{font-size:clamp(32px,9vw,52px)}
+  .section-lead{font-size:var(--text-base)}
+
+  /* Topbar */
+  .topbar-inner{padding:12px var(--space-5)}
+  .nav-actions{gap:var(--space-2)}
+  .btn-sm{height:34px;padding:0 12px;font-size:12px}
+
+  /* Hero */
+  .hero{padding:var(--space-12) 0 var(--space-8)}
+  .hero h1{font-size:clamp(40px,11vw,64px)}
+  .hero-lead{font-size:var(--text-base);max-width:100%}
+  .hero-eyebrow{font-size:12px;padding:5px 12px 5px 5px}
+  .hero-cta{flex-direction:column;gap:var(--space-2)}
+  .hero-cta .btn{width:100%;justify-content:center}
   .hero-form{flex-direction:column;padding:10px;border-radius:var(--radius-xl)}
   .hero-form input{padding:8px 12px}
   .hero-form button{width:100%}
+  .hero-meta{gap:var(--space-5)}
+
+  /* Hero visual — dölj korten på mobil, texten + formuläret räcker */
+  .hero-visual{display:none}
+
+  /* Features */
+  .feature-cell{padding:var(--space-6) var(--space-6) var(--space-8)}
+  .feature+.feature{margin-top:var(--space-16)}
+  .feature-copy h3{font-size:clamp(28px,8vw,38px)}
+
+  /* Phone mockup */
+  .phone{width:260px}
+
+  /* AI section */
+  .ai-mock{padding:var(--space-5)}
+  .health-donut{width:120px;height:120px}
+  .health-donut .score{font-size:38px}
+
+  /* Who cards */
+  .who-card{padding:var(--space-6)}
+
+  /* Principles */
+  .principle{padding:var(--space-6) 0;padding-right:0}
+
+  /* FAQ */
+  .faq summary{font-size:var(--text-base)}
+
+  /* CTA band */
+  .cta-band{padding:var(--space-10) var(--space-6);border-radius:var(--radius-xl)}
+  .cta-band h2{font-size:clamp(30px,9vw,48px)}
+
+  /* Footer */
+  .footer-grid{grid-template-columns:1fr;gap:var(--space-8)}
   .footer-bottom{flex-direction:column;gap:var(--space-2);text-align:center}
+}
+
+/* Small phones (iPhone SE etc.) */
+@media(max-width:400px){
+  .wrap,.wrap-narrow{padding:0 var(--space-4)}
+  .topbar-inner{padding:10px var(--space-4)}
+  .brand-pill-text{font-size:18px}
+  .hero h1{font-size:clamp(36px,12vw,52px)}
+  .nav-actions .btn{display:none} /* bara temat på allra minsta */
+  .nav-actions .theme-toggle{display:inline-flex}
 }
 </style>
 </head>
