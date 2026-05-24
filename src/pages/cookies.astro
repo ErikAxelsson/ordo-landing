@@ -5,8 +5,8 @@
 <head>
 <meta charset="utf-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1"/>
-<title>Cookies — Ordo</title>
-<meta name="description" content="Ordo använder inga spårningscookies."/>
+<title>Cookies — Nidero</title>
+<meta name="description" content="Nidero använder inga spårningscookies."/>
 <link rel="icon" type="image/svg+xml" href="/favicon.svg"/>
 <link rel="preconnect" href="https://fonts.googleapis.com"/>
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
@@ -41,7 +41,7 @@ h1{font-family:var(--font-display);font-size:clamp(36px,6vw,56px);line-height:1.
 <body>
 <header class="topbar">
   <div class="topbar-inner">
-    <a href="/" class="brand-pill" aria-label="Ordo">
+    <a href="/" class="brand-pill" aria-label="Nidero">
       <svg width="18" height="18" viewBox="0 0 64 64" fill="none" aria-hidden="true">
         <rect x="10"   y="38" width="6.5" height="12" rx="3.25" fill="currentColor" opacity="0.50"/>
         <rect x="19.5" y="32" width="6.5" height="18" rx="3.25" fill="currentColor" opacity="0.65"/>
@@ -49,7 +49,7 @@ h1{font-family:var(--font-display);font-size:clamp(36px,6vw,56px);line-height:1.
         <rect x="38.5" y="18" width="6.5" height="32" rx="3.25" fill="currentColor"/>
         <rect x="48"   y="13" width="6.5" height="37" rx="3.25" fill="#FFD9A0"/>
       </svg>
-      <span class="brand-pill-text">Ordo</span>
+      <span class="brand-pill-text">Nidero</span>
     </a>
     <button class="theme-toggle" id="themeToggle" aria-label="Växla tema" type="button">
       <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
@@ -68,31 +68,31 @@ h1{font-family:var(--font-display);font-size:clamp(36px,6vw,56px);line-height:1.
 
   <div class="prose">
     <h2>Vi använder inga spårningscookies</h2>
-    <p>Ordo.se sätter inga cookies för spårning, annonsering eller analys. Det finns inget cookiebanner att klicka bort — för att det inte behövs.</p>
+    <p>Nidero.se sätter inga cookies för spårning, annonsering eller analys. Det finns inget cookiebanner att klicka bort — för att det inte behövs.</p>
 
     <h2>Vad som sparas lokalt</h2>
     <p>Vi använder webbläsarens <strong>localStorage</strong> (inte cookies) för att komma ihåg dina inställningar:</p>
     <ul>
-      <li><strong>ordo-theme</strong> — ljust eller mörkt läge. Lämnar aldrig din enhet.</li>
+      <li><strong>nidero-theme</strong> — ljust eller mörkt läge. Lämnar aldrig din enhet.</li>
     </ul>
-    <p>I appen lagras din inloggningstoken i localStorage. Denna skickas med varje förfrågan till Ordos server, men delas inte med tredje part.</p>
+    <p>I appen lagras din inloggningstoken i localStorage. Denna skickas med varje förfrågan till Nideros server, men delas inte med tredje part.</p>
 
     <h2>Tredjepartscookies</h2>
     <p>Vi laddar typsnitt från Google Fonts. Google kan sätta cookies i samband med detta — se <a href="https://policies.google.com/privacy" target="_blank" rel="noopener">Googles integritetspolicy</a> för mer information. Vi planerar att flytta typsnitten till egna servrar för att ta bort detta beroende.</p>
 
     <h2>Kontakt</h2>
-    <p>Frågor? Skriv till <a href="mailto:hej@meetordo.se">hej@meetordo.se</a>.</p>
+    <p>Frågor? Skriv till <a href="mailto:hej@nidero.se">hej@nidero.se</a>.</p>
   </div>
 </main>
 
 <footer class="footer-mini">
-  <span>ORDO · STOCKHOLM</span>
-  <span>© 2026 ORDO</span>
+  <span>NIDERO · STOCKHOLM</span>
+  <span>© 2026 NIDERO</span>
 </footer>
 
 <script is:inline>
   (function() {
-    var key = 'ordo-theme';
+    var key = 'nidero-theme';
     var saved = localStorage.getItem(key);
     if (saved === 'dark' || saved === 'light') document.documentElement.setAttribute('data-theme', saved);
     var btn = document.getElementById('themeToggle');
