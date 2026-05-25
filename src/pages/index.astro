@@ -1010,17 +1010,34 @@ img,svg{display:block;max-width:100%}
     });
   })();
 
+  var WAITLIST_URL = "https://app.nidero.se/waitlist";
+
   function submitWaitlist(event, source) {
     event.preventDefault();
     var form = event.currentTarget;
     var input = form.querySelector('input[type=email]');
     var button = form.querySelector('button');
     if (!input || !input.value) return false;
-    form.classList.add('success');
-    button.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Klart!';
+
     button.disabled = true;
-    input.disabled = true;
-    // TODO: POST { email: input.value, source: source } to /api/waitlist
+    button.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="animation:spin .7s linear infinite"><path d="M12 2a10 10 0 1 0 10 10"/></svg>';
+
+    fetch(WAITLIST_URL, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ email: input.value, source: source }),
+    })
+      .then(function(r) { return r.ok ? r.json() : Promise.reject(r.status); })
+      .then(function() {
+        form.classList.add("success");
+        button.innerHTML = '<svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M20 6 9 17l-5-5"></path></svg> Klart!';
+        input.disabled = true;
+      })
+      .catch(function() {
+        button.disabled = false;
+        button.textContent = "Försök igen";
+      });
+
     return false;
   }
 </script>
