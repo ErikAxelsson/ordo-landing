@@ -405,6 +405,13 @@ img,svg{display:block;max-width:100%}
   .nav-actions .btn{display:none} /* bara temat på allra minsta */
   .nav-actions .theme-toggle{display:inline-flex}
 }
+/* Download cards */
+.download-card{display:flex;align-items:center;gap:14px;background:var(--bg-surface);border:1px solid var(--border);border-radius:14px;padding:18px 20px;text-decoration:none;color:inherit;transition:box-shadow var(--dur-fast) var(--ease-out),border-color var(--dur-fast) var(--ease-out)}
+.download-card:hover{border-color:var(--brand-500);box-shadow:var(--shadow-md)}
+.download-card-icon{width:36px;height:36px;flex-shrink:0;color:var(--fg-secondary)}
+.download-card-title{font-size:var(--text-base);font-weight:500;color:var(--fg-primary);line-height:1.2}
+.download-card-meta{font-size:var(--text-xs);color:var(--fg-muted);margin-top:2px}
+@keyframes shimmer{0%,100%{opacity:.5}50%{opacity:1}}
 </style>
 </head>
 <body>
@@ -887,6 +894,25 @@ img,svg{display:block;max-width:100%}
   </div>
 </section>
 
+<!-- Nedladdning -->
+<section class="section" id="ladda-ner">
+  <div class="wrap-narrow">
+    <div class="section-header" style="margin-bottom:var(--space-8);">
+      <div class="section-eyebrow">Skrivbordsapp</div>
+      <h2 class="section-title">Nidero på din dator.</h2>
+      <p class="section-body">Samma app, installerad lokalt. Inga flikar, ingen webbläsare.</p>
+    </div>
+    <div id="download-cards" style="display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px;max-width:560px;">
+      <!-- Fylls i av JS nedan -->
+      <div class="download-skeleton" style="height:96px;border-radius:14px;background:var(--bg-surface-2);animation:shimmer 1.4s ease infinite;"></div>
+      <div class="download-skeleton" style="height:96px;border-radius:14px;background:var(--bg-surface-2);animation:shimmer 1.4s ease infinite;animation-delay:.15s"></div>
+    </div>
+    <p style="margin-top:var(--space-4);font-size:12px;color:var(--fg-muted);">
+      macOS-version planeras när appen är redo för bredare lansering.
+    </p>
+  </div>
+</section>
+
 <!-- FAQ -->
 <section class="section" id="fragor">
   <div class="wrap-narrow">
@@ -1008,6 +1034,60 @@ img,svg{display:block;max-width:100%}
       document.documentElement.setAttribute('data-theme', next);
       localStorage.setItem(key, next);
     });
+  })();
+
+  // ── Desktop download cards ──────────────────────────────────────────
+  (function() {
+    var REPO = "ErikAxelsson/homeplanning";
+    var container = document.getElementById("download-cards");
+    if (!container) return;
+
+    var PLATFORMS = [
+      {
+        id: "windows",
+        label: "Windows",
+        ext: ".msi",
+        icon: '<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="8" height="8" rx="1"/><rect x="13" y="3" width="8" height="8" rx="1"/><rect x="3" y="13" width="8" height="8" rx="1"/><rect x="13" y="13" width="8" height="8" rx="1"/></svg>',
+      },
+      {
+        id: "linux",
+        label: "Linux",
+        ext: ".AppImage",
+        icon: '<svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="9"/><path d="M9 9c0-1.66 1.34-3 3-3s3 1.34 3 3c0 2-3 5-3 5"/><circle cx="12" cy="18" r=".5" fill="currentColor"/></svg>',
+      },
+    ];
+
+    fetch("https://api.github.com/repos/" + REPO + "/releases/latest")
+      .then(function(r) { return r.ok ? r.json() : Promise.reject(); })
+      .then(function(release) {
+        var version = release.tag_name || "";
+        var assets = release.assets || [];
+        container.innerHTML = "";
+
+        PLATFORMS.forEach(function(p) {
+          var asset = assets.find(function(a) { return a.name.toLowerCase().endsWith(p.ext); });
+          var card = document.createElement("a");
+          card.className = "download-card";
+          card.href = asset ? asset.browser_download_url : release.html_url;
+          card.target = "_blank";
+          card.rel = "noopener";
+          card.innerHTML =
+            '<span class="download-card-icon">' + p.icon + '</span>' +
+            '<span>' +
+              '<div class="download-card-title">' + p.label + '</div>' +
+              '<div class="download-card-meta">' + (asset ? asset.name : "Se release") + (version ? " &middot; " + version : "") + '</div>' +
+            '</span>';
+          container.appendChild(card);
+        });
+      })
+      .catch(function() {
+        // Fallback: link straight to releases page
+        container.innerHTML =
+          '<a class="download-card" href="https://github.com/' + REPO + '/releases/latest" target="_blank" rel="noopener">' +
+          '<span class="download-card-icon"><svg viewBox="0 0 24 24" width="36" height="36" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2v13m0 0-4-4m4 4 4-4"/><path d="M2 17v2a2 2 0 0 0 2 2h16a2 2 0 0 0 2-2v-2"/></svg></span>' +
+          '<span><div class="download-card-title">Ladda ner</div><div class="download-card-meta">Windows &amp; Linux · GitHub Releases</div></span>' +
+          '</a>';
+      });
   })();
 
   var WAITLIST_URL = "https://app.nidero.se/waitlist";
