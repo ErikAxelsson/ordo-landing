@@ -66,8 +66,8 @@
 /* ── Nav links font override ── */
 .nav-links a, .nav-actions a, .nav-actions button { font-family: Inter, system-ui, sans-serif !important; }
 
-/* ── Footer — override blog's dark footer completely ── */
-.footer { margin-top: 80px !important; border-top: 1px solid var(--border-subtle) !important; padding: 48px 0 40px !important; background: var(--bg-page) !important; color: var(--fg-primary) !important; }
+/* ── Footer ── */
+.footer { margin-top: 80px; border-top: 1px solid var(--border-subtle); padding: 48px 0 40px; background: var(--bg-page); color: var(--fg-primary); }
 .footer .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
 .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 40px; align-items: flex-start; }
 .footer-brand p { margin-top: 16px; font-size: var(--text-sm); color: var(--fg-tertiary); max-width: 38ch; }
