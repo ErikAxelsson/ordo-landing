@@ -101,8 +101,12 @@ export default {
       ? landingHeader.replace(/href="#/g, 'href="/#')
       : null;
 
-    // 3. Use HTMLRewriter to swap header + footer in the blog response
-    let rewriter = new HTMLRewriter();
+    // 3. Use HTMLRewriter to swap header + footer and inject shared nav CSS
+    const NAV_CSS_LINK = '<link rel="stylesheet" href="https://www.nidero.se/nav.css"/>';
+    let rewriter = new HTMLRewriter()
+      .on("head", {
+        element(el) { el.append(NAV_CSS_LINK, { html: true }); },
+      });
 
     if (fixedHeader) {
       rewriter = rewriter.on("header.topbar", {
