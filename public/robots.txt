@@ -3,3 +3,4 @@ Allow: /
 
 Sitemap: https://www.nidero.se/sitemap.xml
 Sitemap: https://www.nidero.se/blog/sitemap.xml
+Sitemap: https://www.nidero.se/guider/sitemap.xml

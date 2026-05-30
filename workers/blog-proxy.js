@@ -57,8 +57,8 @@ export default {
   async fetch(request, env, ctx) {
     const url = new URL(request.url);
 
-    // Only handle /blog paths
-    if (!url.pathname.startsWith("/blog")) {
+    // Handle /blog (news) and /guider (evergreen guides) — both proxied to Railway
+    if (!url.pathname.startsWith("/blog") && !url.pathname.startsWith("/guider")) {
       return fetch(request);
     }
 
