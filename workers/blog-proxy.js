@@ -95,10 +95,11 @@ export default {
     const landingHeader = extractTag(landingHtml, "header");
     const landingFooter = extractTag(landingHtml, "footer");
 
-    // Fix anchor hrefs in landing nav that are relative (#funktioner → /#funktioner)
-    // so they work on /blog/* paths
+    // Fix anchor hrefs + strip theme toggle (removed from design, belt-and-suspenders)
     const fixedHeader = landingHeader
-      ? landingHeader.replace(/href="#/g, 'href="/#')
+      ? landingHeader
+          .replace(/href="#/g, 'href="/#')
+          .replace(/<button[^>]*theme-toggle[^>]*>[\s\S]*?<\/button>/g, '')
       : null;
 
     // 3. Use HTMLRewriter to swap header + footer and inject shared assets
