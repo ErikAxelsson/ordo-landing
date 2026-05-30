@@ -101,11 +101,21 @@ export default {
       ? landingHeader.replace(/href="#/g, 'href="/#')
       : null;
 
-    // 3. Use HTMLRewriter to swap header + footer and inject shared nav CSS
-    const NAV_CSS_LINK = '<link rel="stylesheet" href="https://www.nidero.se/nav.css"/>';
+    // 3. Use HTMLRewriter to swap header + footer and inject shared assets
+    const HEAD_INJECT = [
+      '<link rel="stylesheet" href="https://www.nidero.se/nav.css"/>',
+      '<link rel="icon" type="image/svg+xml" href="https://www.nidero.se/favicon.svg"/>',
+      '<link rel="shortcut icon" href="https://www.nidero.se/favicon.ico"/>',
+    ].join("");
     let rewriter = new HTMLRewriter()
       .on("head", {
-        element(el) { el.append(NAV_CSS_LINK, { html: true }); },
+        element(el) {
+          // Remove any existing favicon links first, then inject ours
+          el.append(HEAD_INJECT, { html: true });
+        },
+      })
+      .on('link[rel="icon"], link[rel="shortcut icon"]', {
+        element(el) { el.remove(); },
       });
 
     if (fixedHeader) {
