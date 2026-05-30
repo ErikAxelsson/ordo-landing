@@ -43,6 +43,10 @@
 .btn-sm { height: 36px; padding: 0 14px; font-size: 13px; }
 .arrow { width: 14px; height: 14px; }
 
+/* ── Mobil hamburger-meny (CSS-only, ingen JS) ── */
+.nav-toggle { display: none; }
+.hamburger { display: none; }
+
 /* ── Footer ── */
 .footer { margin-top: 80px; border-top: 1px solid var(--border-subtle); padding: 48px 0 40px; background: var(--bg-page); color: var(--fg-primary); }
 .footer .wrap { max-width: 1200px; margin: 0 auto; padding: 0 32px; }
@@ -56,6 +60,18 @@
 .footer-brand .brand-pill { margin-bottom: 4px; }
 
 /* ── Responsive ── */
-@media (max-width: 880px) { .nav-links { display: none; } }
+@media (max-width: 880px) {
+  .hamburger { display: inline-flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: var(--radius-pill); color: var(--fg-secondary); cursor: pointer; flex-shrink: 0; }
+  .hamburger:hover { background: var(--bg-hover); color: var(--fg-primary); }
+  .nav-links {
+    display: none; position: absolute; top: 100%; right: 0; left: 0;
+    flex-direction: column; align-items: stretch; gap: 2px;
+    background: var(--bg-page); border-bottom: 1px solid var(--border-subtle);
+    box-shadow: var(--shadow-lg, 0 18px 48px rgba(20,30,50,0.10)); padding: 8px 16px 16px;
+  }
+  .nav-toggle:checked ~ .nav-links { display: flex; }
+  .nav-links a { padding: 12px 14px; font-size: 15px; border-radius: 8px; }
+  .topbar-inner { position: relative; }
+}
 @media (max-width: 720px) { .topbar-inner { padding: 12px 20px; } .footer-grid { grid-template-columns: 1fr 1fr; gap: 24px; } }
 @media (max-width: 480px) { .topbar-inner { padding: 10px 16px; } .brand-pill-text { font-size: 18px; } .nav-actions .btn { display: none; } .footer-grid { grid-template-columns: 1fr; } .footer-bottom { flex-direction: column; gap: 8px; } }

@@ -73,8 +73,9 @@ const APP_URL = "https://app.nidero.se";
 }
 /* ── BASE ────────────────────────────────────────────────────────── */
 *,*::before,*::after{box-sizing:border-box}
-html,body{margin:0;padding:0}
+html,body{margin:0;padding:0;overflow-x:hidden;max-width:100%}
 html{scroll-behavior:smooth}
+.hamburger{display:none}
 body{font-family:var(--font-ui);font-size:var(--text-base);line-height:1.55;color:var(--fg-primary);background:var(--bg-page);-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility;font-feature-settings:"ss01","cv11";font-variant-numeric:tabular-nums;scrollbar-gutter:stable}
 h1,h2,h3,h4,h5,h6{margin:0;font-weight:500;letter-spacing:-0.015em}
 p{margin:0}
@@ -305,7 +306,21 @@ img,svg{display:block;max-width:100%}
 .footer-bottom{margin-top:var(--space-12);padding-top:var(--space-6);border-top:1px solid var(--border-subtle);display:flex;justify-content:space-between;align-items:center;font-family:var(--font-mono);font-size:var(--text-xs);color:var(--fg-tertiary);letter-spacing:0.04em}
 /* ── RESPONSIVE ─────────────────────────────────────────────────── */
 /* ── RESPONSIVE ─────────────────────────────────────────────────── */
-@media(max-width:880px){.nav-links{display:none}}
+@media(max-width:880px){
+  /* Visa hamburgaren, göm nav-länkarna tills menyn öppnas */
+  .hamburger{display:inline-flex;align-items:center;justify-content:center;width:40px;height:40px;border-radius:var(--radius-pill);color:var(--fg-secondary);cursor:pointer;flex-shrink:0}
+  .hamburger:hover{background:var(--bg-hover);color:var(--fg-primary)}
+  .nav-links{
+    display:none;position:absolute;top:100%;right:0;left:0;
+    flex-direction:column;align-items:stretch;gap:2px;
+    background:var(--bg-page);border-bottom:1px solid var(--border-subtle);
+    box-shadow:var(--shadow-lg);padding:8px 16px 16px;
+  }
+  .nav-toggle:checked ~ .nav-links{display:flex}
+  .nav-links a{padding:12px 14px;font-size:15px;border-radius:8px}
+  .topbar{position:sticky}
+  .topbar-inner{position:relative}
+}
 @media(max-width:980px){.nav-actions .btn-ghost{display:none}}
 
 /* Tablet + small desktop */
@@ -401,6 +416,7 @@ img,svg{display:block;max-width:100%}
       </svg>
       <span class="brand-pill-text">Nidero</span>
     </a>
+    <input type="checkbox" id="nav-toggle" class="nav-toggle" hidden />
     <nav class="nav-links" aria-label="Sektioner">
       <a href="#funktioner">Funktioner</a>
       <a href="#notiser">Notiser</a>
@@ -413,6 +429,9 @@ img,svg{display:block;max-width:100%}
       <a href="#cta" class="btn btn-primary btn-sm">Anmäl intresse
         <svg class="arrow" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 5l7 7-7 7"/></svg>
       </a>
+      <label for="nav-toggle" class="hamburger" aria-label="Öppna meny">
+        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 6h18M3 12h18M3 18h18"/></svg>
+      </label>
     </div>
   </div>
 </header>
