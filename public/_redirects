@@ -1,0 +1,3 @@
+/blog/images/*  https://app.nidero.se/blog/images/:splat  200
+/blog/*         https://app.nidero.se/blog/:splat          200
+/blog           https://app.nidero.se/blog                 200
