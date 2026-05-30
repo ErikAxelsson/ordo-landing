@@ -65,10 +65,10 @@ a:hover{text-decoration:underline}
 /* Logo pill-badge · Gradient·brand (§5c) */
 .brand-pill{display:inline-flex;align-items:center;gap:8px;padding:6px 14px 6px 9px;background:linear-gradient(160deg,#5C7AE0 0%,#3D5BC7 55%,#2A3F9E 100%);border-radius:999px;color:#fff;text-decoration:none;box-shadow:0 8px 22px color-mix(in oklch,#3D5BC7 32%,transparent);flex-shrink:0}
 .brand-pill-text{font-family:var(--font-display);font-size:21px;line-height:1;letter-spacing:-0.015em}
-.theme-toggle{width:36px;height:36px;display:inline-flex;align-items:center;justify-content:center;background:transparent;border:1px solid var(--border);border-radius:999px;color:var(--fg-secondary);cursor:pointer}
-.theme-toggle svg{width:16px;height:16px}
-[data-theme="light"] .icon-sun{display:none}
-[data-theme="dark"] .icon-moon{display:none}
+
+
+
+
 .page{max-width:720px;margin:0 auto;padding:64px 32px 96px}
 .back{display:inline-flex;align-items:center;gap:8px;font-size:13px;color:var(--fg-tertiary);margin-bottom:48px;text-decoration:none}
 .back:hover{color:var(--fg-primary)}
@@ -98,10 +98,6 @@ h1{font-family:var(--font-display);font-size:clamp(36px,6vw,56px);line-height:1.
       </svg>
       <span class="brand-pill-text">Nidero</span>
     </a>
-    <button class="theme-toggle" id="themeToggle" aria-label="Växla tema" type="button">
-      <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79Z"/></svg>
-      <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="4"/><path d="M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M4.93 19.07l1.41-1.41M17.66 6.34l1.41-1.41"/></svg>
-    </button>
   </div>
 </header>
 
@@ -149,14 +145,6 @@ h1{font-family:var(--font-display);font-size:clamp(36px,6vw,56px);line-height:1.
     var key = 'nidero-theme';
     var saved = localStorage.getItem(key);
     if (saved === 'dark' || saved === 'light') document.documentElement.setAttribute('data-theme', saved);
-    var btn = document.getElementById('themeToggle');
-    if (!btn) return;
-    btn.addEventListener('click', function() {
-      var current = document.documentElement.getAttribute('data-theme');
-      var next = current === 'dark' ? 'light' : 'dark';
-      document.documentElement.setAttribute('data-theme', next);
-      localStorage.setItem(key, next);
-    });
   })();
 </script>
 </body>
